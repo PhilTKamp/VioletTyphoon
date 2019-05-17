@@ -1,0 +1,32 @@
+chessboard {
+    display: grid;
+    border: solid 1px #000000;
+    height: 600px;
+    width: 600px;
+    grid-template-rows: repeat(8, 1fr);
+}
+
+chessrow {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+chesssquare p {
+    margin: 0;
+}
+
+chesssquare {
+    border: solid 1px #000;
+    justify-self: stretch;
+    background-color: #A57F60;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 3em;
+    color: #011638;
+}
+
+chessrow:nth-child(odd) chesssquare:nth-child(odd),
+chessrow:nth-child(even) chesssquare:nth-child(even)
+{
+    background-color: #E8D2AE;
+}
