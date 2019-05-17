@@ -40,7 +40,7 @@ function createNewChessBoard()
 
 function dragenter (e)
 {
-    this.style.border = "1px solid #CB8589";
+    this.style.border = "3px dashed #CB8589";
 }
 
 function dragover(e)
