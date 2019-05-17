@@ -17,7 +17,6 @@ function createGUIChessBoard(gameboard)
             cSquare.addEventListener("dragleave", dragleave);
             cSquare.addEventListener("drop", drop);
             cSquare.addEventListener("dragstart", dragstart);
-            cSquare.addEventListener("dragend", dragend);
             cRow.appendChild(cSquare);
         }
     }
@@ -56,18 +55,21 @@ function dragleave(e)
 function drop(e)
 {
     e.preventDefault();
-    this.innerText = e.dataTransfer.getData("piece");
+    var parentID = e.dataTransfer.getData("ID");
+    var parent = document.getElementById(parentID);
+
+    if(e.target.id != parentID)
+    {
+        e.target.innerText = parent.innerText;
+        parent.innerText = "";
+    }
+
     this.style.border = "";
 }
 
 function dragstart(e)
 {
-    e.dataTransfer.setData("piece", this.innerText);
-}
-
-function dragend(e)
-{
-    this.innerText = "";
+    e.dataTransfer.setData("ID", e.target.id);
 }
 
 var gameboard = createNewChessBoard();
