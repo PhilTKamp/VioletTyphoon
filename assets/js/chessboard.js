@@ -22,7 +22,10 @@ class Chessboard {
 
     getPiece(x, y) 
     {
-        return this._gameboard[x][y];
+        if( this._gameboard[x][y] )
+            return this._gameboard[x][y].display;
+        else
+            return "";
     }
 
     setPiece(x, y, piece)
@@ -33,42 +36,60 @@ class Chessboard {
     movePiece(srcX, srcY, destX, destY)
     {
         this.setPiece(destX, destY, this.getPiece(srcX, srcY));
-        this.setPiece(srcX, srcY, "");
+        this.setPiece(srcX, srcY, null);
     }
 
     getWhitePieces()
     {
-        let pieces = new Array(6);
-        pieces[0] = new King()
+        let pieces = new Map(6);
+        pieces["K"] = new King(true, "♚")
+        pieces["Q"] = new Queen(true, "♛")
+        pieces["R"] = new Rook(true, "♜")
+        pieces["B"] = new Bishop(true, "♝")
+        pieces["N"] = new Knight(true, "♞")
+        pieces["P"] = new Pawn(true, "♟")
         return pieces;
     }
 
     getBlackPieces()
     {
-        let pieces = ["♔", "♕", "♗", "♘", "♖", "♙"];
+        let pieces = new Map(6);
+        pieces["K"] = new King(false, "♔")
+        pieces["Q"] = new Queen(false, "♕")
+        pieces["R"] = new Rook(false, "♖")
+        pieces["B"] = new Bishop(false, "♗")
+        pieces["N"] = new Knight(false, "♘")
+        pieces["P"] = new Pawn(false, "♙")
         return pieces;
     }
 
     resetBoard()
     {
-        const startingLayout = [
-            ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-            ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-            ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
-            ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-            ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
-        ];
+        this.clearBoard();
 
-        for(let row = 0; row < 8; row++)
-        {
-            for(let col = 0; col < 8; col++)
-            {
-                this.setPiece(row, col, startingLayout[row][col]);
-            }
-        }
+        this.setPiece(0, 0, new Rook(false, "♜"));
+        this.setPiece(0, 1, new Knight(false, "♞"));
+        this.setPiece(0, 2, new Bishop(false, "♝"));
+        this.setPiece(0, 3, new Queen(false, "♛"));
+        this.setPiece(0, 4, new King(false, "♚"));
+        this.setPiece(0, 5, new Bishop(false, "♝"));
+        this.setPiece(0, 6, new Knight(false, "♞"));
+        this.setPiece(0, 7, new Rook(false, "♜"));
+
+        this.setPiece(7, 0, new Rook(true, "♖"));
+        this.setPiece(7, 1, new Knight(true, "♘"));
+        this.setPiece(7, 2, new Bishop(true, "♗"));
+        this.setPiece(7, 3, new Queen(true, "♕"));
+        this.setPiece(7, 4, new King(true, "♔"));
+        this.setPiece(7, 5, new Bishop(true, "♗"));
+        this.setPiece(7, 6, new Knight(true, "♘"));
+        this.setPiece(7, 7, new Rook(true, "♖"));
+
+        for(let i = 0; i < 8; i++)
+            this.setPiece(6, i, new Pawn(false, "♙"))
+
+        for(let i = 0; i < 8; i++)
+            this.setPiece(1, i, new Pawn(false, "♟"))
     }
 
     clearBoard()
@@ -77,7 +98,7 @@ class Chessboard {
         {
             for(let col = 0; col < 8; col++)
             {
-                this.setPiece(row, col, "");
+                this.setPiece(row, col, null);
             }
         }
     }
