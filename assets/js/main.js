@@ -1,4 +1,6 @@
 // TODO uniquely identify each chessboard to allow for multiple boards on a page
+// TODO only apply the drag and drop to the squares with pieces on them
+
 function createGUIChessBoard(gameboard)
 {
     var chessboardGUI = document.getElementsByTagName("chessboard")[0];
