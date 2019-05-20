@@ -43,7 +43,7 @@ class Bishop extends ChessPiece {
     constructor(isWhite, display) {
         super(isWhite, display, "B");
     }
-
+    
     getPotentialMoves(x, y, board) {
         let moves = [];
         let i = 1;
@@ -58,7 +58,7 @@ class Bishop extends ChessPiece {
             {
                 stop = true;
             }
-
+            
             moves.push({
                 x : x + i,
                 y : y + i
@@ -119,8 +119,8 @@ class Bishop extends ChessPiece {
         
         return moves;
     }
-
-
+    
+    
 }
 
 class King extends ChessPiece {
@@ -142,6 +142,25 @@ class King extends ChessPiece {
             }
         }
 
+        return moves;
+    }
+}
+
+class Knight extends ChessPiece {
+    constructor(isWhite, display) {
+        super(isWhite, display, "N");
+    }
+
+    getPotentialMoves(x, y, board) {
+        const knightDeltas = [ [1, 3], [3, 1], [3, -1], [1, -3], [-1, -3], [-3, -1], [-3, 1], [3, -1] ];
+
+        let moves = knightDeltas.map((move) => {
+            return {
+                x : x + move[0],
+                y : y + move[1]
+            };
+        })
+        
         return moves;
     }
 }
