@@ -35,7 +35,7 @@ class Chessboard {
 
     movePiece(srcX, srcY, destX, destY)
     {
-        this.setPiece(destX, destY, this.getPiece(srcX, srcY));
+        this.setPiece(destX, destY, this._gameboard[srcX][srcY]);
         this.setPiece(srcX, srcY, null);
     }
 
