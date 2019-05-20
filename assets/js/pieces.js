@@ -108,7 +108,7 @@ function getHorizontals(x, y, board) {
         i--;
     }
 
-    let i = x + 1
+    i = x + 1
     while( i < 8 && !stop)
     {
         if(board[i][y]) 
