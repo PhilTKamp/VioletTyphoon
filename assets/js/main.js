@@ -11,8 +11,8 @@ function createGUIChessBoard(gameboard)
         for(let col = 0; col < 8; col++)
         {
             var cSquare = document.createElement("chesssquare");
-            cSquare.id = `${row}_${col}`;
-            cSquare.innerText = gameboard.getPiece(row, col);
+            cSquare.id = `${col}_${row}`;
+            cSquare.innerText = gameboard.getDisplay(col, row);
             cSquare.draggable = true;
             cSquare.addEventListener("dragover", dragover);
             cSquare.addEventListener("dragenter", dragenter);
@@ -31,7 +31,7 @@ function updateChessboard (gameboard)
         let cRow = document.getElementById(`row_${row}`);
         for(let col = 0; col < 8; col++)
         {
-            cRow.children[col].innerText = gameboard.getPiece(row, col);
+            cRow.children[col].innerText = gameboard.getDisplay(col, row);
         }
     }
 }

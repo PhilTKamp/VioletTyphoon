@@ -1,4 +1,6 @@
-/**  
+/**
+ * An ADT Simulating a Chessboard
+ * 
  * Internally we are ditching the standard chess notation for rows and columns
  * in favor of an x,y coordinate system based on the black queenside rook to simplify
  * calculations. All requests requiring serialization of the data should convert all
@@ -9,38 +11,37 @@
 // Todo: add logic for if a king is in check
 // Todo: Check for checkmate and end game
 class Chessboard {
-    constructor()
-    {
-        this._gameboard = new Array(8);
-        for(let row = 0; row < 8; row++)
-        {
-            this._gameboard[row] = new Array(8);
-        }
-
+    constructor() {
+        this._gameboard = new Array(64);
+        this.height = 8;
+        this.width = 8;
         this.clearBoard();
     }
 
-    getPiece(x, y) 
-    {
-        if( this._gameboard[x][y] )
-            return this._gameboard[x][y].display;
+    getDisplay(x, y) {
+        if( this.getPiece(x, y) )
+            return this.getPiece(x, y).display;
         else
             return "";
     }
 
-    setPiece(x, y, piece)
-    {
-        this._gameboard[x][y] = piece;
+    getPiece(x, y) {
+        return this._gameboard[y * this.width + x];
     }
 
-    movePiece(srcX, srcY, destX, destY)
-    {
-        this.setPiece(destX, destY, this._gameboard[srcX][srcY]);
+    setPiece(x, y, piece) {
+
+        this._gameboard[y * this.width + x] = piece;
+    }
+
+    movePiece(srcX, srcY, destX, destY) {
+        this.setPiece(destX, destY, this.getPiece(srcX, srcY));
         this.setPiece(srcX, srcY, null);
+        console.log(`${srcX}, ${srcY} -> ${destX}, ${destY}`);
+        console.log(`Piece: ${this.getPiece(srcX, srcY)}`);
     }
 
-    getWhitePieces()
-    {
+    getWhitePieces() {
         let pieces = new Map(6);
         pieces["K"] = new King(true, "♚")
         pieces["Q"] = new Queen(true, "♛")
@@ -51,8 +52,7 @@ class Chessboard {
         return pieces;
     }
 
-    getBlackPieces()
-    {
+    getBlackPieces() {
         let pieces = new Map(6);
         pieces["K"] = new King(false, "♔")
         pieces["Q"] = new Queen(false, "♕")
@@ -63,37 +63,35 @@ class Chessboard {
         return pieces;
     }
 
-    resetBoard()
-    {
+    resetBoard() {
         this.clearBoard();
 
         this.setPiece(0, 0, new Rook(false, "♜"));
-        this.setPiece(0, 1, new Knight(false, "♞"));
-        this.setPiece(0, 2, new Bishop(false, "♝"));
-        this.setPiece(0, 3, new Queen(false, "♛"));
-        this.setPiece(0, 4, new King(false, "♚"));
-        this.setPiece(0, 5, new Bishop(false, "♝"));
-        this.setPiece(0, 6, new Knight(false, "♞"));
-        this.setPiece(0, 7, new Rook(false, "♜"));
+        this.setPiece(1, 0, new Knight(false, "♞"));
+        this.setPiece(2, 0, new Bishop(false, "♝"));
+        this.setPiece(3, 0, new Queen(false, "♛"));
+        this.setPiece(4, 0, new King(false, "♚"));
+        this.setPiece(5, 0, new Bishop(false, "♝"));
+        this.setPiece(6, 0, new Knight(false, "♞"));
+        this.setPiece(7, 0, new Rook(false, "♜"));
 
-        this.setPiece(7, 0, new Rook(true, "♖"));
-        this.setPiece(7, 1, new Knight(true, "♘"));
-        this.setPiece(7, 2, new Bishop(true, "♗"));
-        this.setPiece(7, 3, new Queen(true, "♕"));
-        this.setPiece(7, 4, new King(true, "♔"));
-        this.setPiece(7, 5, new Bishop(true, "♗"));
-        this.setPiece(7, 6, new Knight(true, "♘"));
+        this.setPiece(0, 7, new Rook(true, "♖"));
+        this.setPiece(1, 7, new Knight(true, "♘"));
+        this.setPiece(2, 7, new Bishop(true, "♗"));
+        this.setPiece(3, 7, new Queen(true, "♕"));
+        this.setPiece(4, 7, new King(true, "♔"));
+        this.setPiece(5, 7, new Bishop(true, "♗"));
+        this.setPiece(6, 7, new Knight(true, "♘"));
         this.setPiece(7, 7, new Rook(true, "♖"));
 
         for(let i = 0; i < 8; i++)
-            this.setPiece(6, i, new Pawn(false, "♙"))
+            this.setPiece(i, 6, new Pawn(true, "♙"))
 
         for(let i = 0; i < 8; i++)
-            this.setPiece(1, i, new Pawn(false, "♟"))
+            this.setPiece(i, 1, new Pawn(false, "♟"))
     }
 
-    clearBoard()
-    {
+    clearBoard() {
         for(let row = 0; row < 8; row++)
         {
             for(let col = 0; col < 8; col++)
@@ -103,11 +101,10 @@ class Chessboard {
         }
     }
 
-    printBoard()
-    {
-        for(let row = 0; row < 8; row++)
+    printBoard() {
+        for(let row = 0; row < this.height; row++)
         {
-            console.log(this._gameboard[row]);
+            console.log(this._gameboard.slice(row * this.width, row * this.width + this.width));
         }
     }
 }

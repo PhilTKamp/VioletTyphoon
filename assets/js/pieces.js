@@ -254,29 +254,34 @@ class Pawn extends ChessPiece {
         let moves = [];
         
         if(this.isWhite) {
-            moves.push({
-                x : x,
-                y : y - 1 
-            });
-
-            if(y == 6 && !board[x][5]) {
-                moves.push({ 
+            if(!board.getPiece(x, 5))
+            {
+                moves.push({
                     x : x,
-                    y : y - 2 
+                    y : y - 1 
                 });
+
+                if(y == 6) {
+                    moves.push({ 
+                        x : x,
+                        y : y - 2 
+                    });
+                }
             }
         }
         else {
-            moves.push({
-                x : x,
-                y : y + 1
-            });
-
-            if(y == 1 && !board[x][2]) {
+            if(!board.getPiece(x, 2)) {
                 moves.push({
                     x : x,
-                    y : y + 2
+                    y : y + 1
                 });
+
+                if(y == 1) {
+                    moves.push({
+                        x : x,
+                        y : y + 2
+                    });
+                }
             }
         }
 
