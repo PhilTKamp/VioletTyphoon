@@ -26,13 +26,13 @@ class ChessPiece {
     }
 }
 
-//Template for the derived classes
+//Copy Paste Template for the derived classes
 class XYZ extends ChessPiece {
     constructor(isWhite, display) {
         super(isWhite, display, "X");
     }
 
-    getPotentialMoves(x, y) {
+    getPotentialMoves(x, y, board) {
         let moves = [];
 
         return moves;
