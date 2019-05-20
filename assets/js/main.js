@@ -1,16 +1,17 @@
 function createGUIChessBoard(gameboard)
 {
     var chessboardGUI = document.getElementsByTagName("chessboard")[0];
-    for(row = 0; row < 8; row++)
+    for(let row = 0; row < 8; row++)
     {
         var cRow = document.createElement("chessrow");
         cRow.id = `row_${row}`;
         chessboardGUI.appendChild(cRow);
-        for(col = 0; col < 8; col++)
+
+        for(let col = 0; col < 8; col++)
         {
             var cSquare = document.createElement("chesssquare");
             cSquare.id = `${row}_${col}`;
-            cSquare.innerText = gameboard[row][col];
+            cSquare.innerText = gameboard.getPiece(row, col);
             cSquare.draggable = true;
             cSquare.addEventListener("dragover", dragover);
             cSquare.addEventListener("dragenter", dragenter);
@@ -22,19 +23,16 @@ function createGUIChessBoard(gameboard)
     }
 }
 
-function createNewChessBoard()
+function updateChessboard (gameboard)
 {
-    return [
-        ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-        ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-        ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
-    ];
-
+    for(let row = 0; row < 8; row++)
+    {
+        let cRow = document.getElementById(`row_${row}`);
+        for(let col = 0; col < 8; col++)
+        {
+            cRow.children[col].innerText = gameboard.getPiece(row, col);
+        }
+    }
 }
 
 function dragenter (e)
@@ -55,8 +53,13 @@ function dragleave(e)
 function drop(e)
 {
     e.preventDefault();
-    var parentID = e.dataTransfer.getData("ID");
-    var parent = document.getElementById(parentID);
+    const parentID = e.dataTransfer.getData("ID");
+    const parent = document.getElementById(parentID);
+    
+    let srcX, srcY, destX, destY;
+    [srcX, srcY] = elementToCoordinates(parent);
+    [destX, destY] = elementToCoordinates(e.target);
+    gameboard.movePiece(srcX, srcY, destX, destY);
 
     if(e.target.id != parentID)
     {
@@ -72,5 +75,11 @@ function dragstart(e)
     e.dataTransfer.setData("ID", e.target.id);
 }
 
-var gameboard = createNewChessBoard();
+function elementToCoordinates(element)
+{
+    return element.id.split("_");
+}
+
+let gameboard = new Chessboard();
+gameboard.resetBoard();
 createGUIChessBoard(gameboard);
