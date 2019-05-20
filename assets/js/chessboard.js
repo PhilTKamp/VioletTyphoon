@@ -4,6 +4,10 @@
  * calculations. All requests requiring serialization of the data should convert all
  * coordinates to the appropriate chess notation.
 */
+
+// Todo: add logic to determine if a square puts a king in check
+// Todo: add logic for if a king is in check
+// Todo: Check for checkmate and end game
 class Chessboard {
     constructor()
     {
@@ -34,7 +38,8 @@ class Chessboard {
 
     getWhitePieces()
     {
-        let pieces = ["♚", "♛", "♝", "♞", "♜", "♟"];
+        let pieces = new Array(6);
+        pieces[0] = new King()
         return pieces;
     }
 

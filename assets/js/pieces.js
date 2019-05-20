@@ -159,19 +159,6 @@ class ChessPiece {
     }
 }
 
-//Copy Paste Template for the derived classes
-class XYZ extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "X");
-    }
-
-    getPotentialMoves(x, y, board) {
-        let moves = [];
-
-        return moves;
-    }
-}
-
 class Bishop extends ChessPiece {
     constructor(isWhite, display) {
         super(isWhite, display, "B");
@@ -184,8 +171,6 @@ class Bishop extends ChessPiece {
         
         return moves;
     }
-    
-    
 }
 
 class King extends ChessPiece {
@@ -211,6 +196,7 @@ class King extends ChessPiece {
     }
 }
 
+// Todo: add castling logic, prevent from moving into check
 class Knight extends ChessPiece {
     constructor(isWhite, display) {
         super(isWhite, display, "N");
@@ -257,6 +243,7 @@ class Rook extends ChessPiece {
     }
 }
 
+// Todo: Check for capturing, and not jumping pieces
 class Pawn extends ChessPiece {
     
     constructor(isWhite, display) {

@@ -1,3 +1,4 @@
+// TODO uniquely identify each chessboard to allow for multiple boards on a page
 function createGUIChessBoard(gameboard)
 {
     var chessboardGUI = document.getElementsByTagName("chessboard")[0];
