@@ -6,6 +6,139 @@
  * R = Rook, P = Pawn
  */
 
+function getDiagonals(x, y, board) {
+    let i = 1;
+    let stop = false;
+
+    //Iterate through each coordinate quadrant, centered on piece stopping    
+    // Quadrant I
+    while(x + i < 8 && y + i < 8 && !stop)
+    {
+        if(board[x + i][y + i]) 
+            stop = true;
+        
+        moves.push({
+            x : x + i,
+            y : y + i
+        });
+        i++;
+    }
+    
+    i = 1;
+    stop = false;
+    
+    // Quadrant II
+    while(x - i >= 0 && y + i < 8 && !stop)
+    {
+        if(board[x - i][y + i])
+            stop = true;
+        
+        moves.push({
+            x : x - i,
+            y : y + i
+        });
+        i++;
+    }
+    
+    i = 1;
+    stop = false;
+    
+    // Quadrant III
+    while(x - i >= 0 && y - i >= 0 && !stop)
+    {
+        if(board[x - i][y - i])
+            stop = true;
+        
+        moves.push({
+            x : x - i,
+            y : y - i
+        });
+        i++;
+    }
+    
+    
+    i = 1;
+    stop = false;
+    
+    // Quadrant IV
+    while(x + i < 8 && y - i >= 0 && !stop)
+    {
+        if(board[x + i][y - i])
+            stop = true;
+        
+        moves.push({
+            x : x + i,
+            y : y - i
+        });
+        i++;
+    }
+    
+    return moves;
+}
+
+function getHorizontals(x, y, board) {
+    let moves = [];
+
+    let i = y + 1;
+    //Generate the horizontal and vertical moves
+    while( i < 8 && !stop)
+    {
+        if(board[x][i]) 
+            stop = true;
+
+        moves.push({
+            x : x,
+            y : i
+        })
+        i++;
+    }
+
+    stop = false;
+    i = y - 1;
+    
+    while(i >= 0 && !stop)
+    {
+        if(board[x][i])
+            stop = true;
+        
+        moves.push({
+            x : x,
+            y: i
+        })
+        i--;
+    }
+
+    let i = x + 1
+    while( i < 8 && !stop)
+    {
+        if(board[i][y]) 
+            stop = true;
+
+        moves.push({
+            x : i,
+            y : y
+        })
+        i++;
+    }
+
+    stop = false;
+    i = y - 1;
+    
+    while(i >= 0 && !stop)
+    {
+        if(board[i][y])
+            stop = true;
+        
+        moves.push({
+            x : i,
+            y: y
+        })
+        i--;
+    }
+
+    return moves;
+}
+
 class ChessPiece {
     constructor(isWhite, display, name) {
         this.name = name;
@@ -46,76 +179,8 @@ class Bishop extends ChessPiece {
     
     getPotentialMoves(x, y, board) {
         let moves = [];
-        let i = 1;
-        
-        //Iterate through each coordinate quadrant, centered on piece stopping
-        let stop = false;
-        
-        // Quadrant I
-        while(x + i < 8 && y + i < 8 && !stop)
-        {
-            if(board[x + i][y + i])
-            {
-                stop = true;
-            }
-            
-            moves.push({
-                x : x + i,
-                y : y + i
-            });
-        }
-        
-        i = 1;
-        stop = false;
-        
-        // Quadrant II
-        while(x - i >= 0 && y + i < 8 && !stop)
-        {
-            if(board[x - i][y + i])
-            {
-                stop = true;
-            }
-            
-            moves.push({
-                x : x - i,
-                y : y + i
-            });
-        }
-        
-        i = 1;
-        stop = false;
-        
-        // Quadrant III
-        while(x - i >= 0 && y - i >= 0 && !stop)
-        {
-            if(board[x - i][y - i])
-            {
-                stop = true;
-            }
-            
-            moves.push({
-                x : x - i,
-                y : y - i
-            });
-        }
-        
-        
-        i = 1;
-        stop = false;
-        
-        // Quadrant IV
-        while(x + i < 8 && y - i >= 0 && !stop)
-        {
-            if(board[x + i][y - i])
-            {
-                stop = true;
-            }
-            
-            moves.push({
-                x : x + i,
-                y : y - i
-            });
-        }
+
+        moves.push(...getDiagonals(x, y, board));
         
         return moves;
     }
@@ -160,13 +225,28 @@ class Knight extends ChessPiece {
                 y : y + move[1]
             };
         })
+
+        return moves;
+    }
+}
+
+class Queen extends ChessPiece {
+    constructor(isWhite, display) {
+        super(isWhite, display, "Q");
+    }
+    
+    getPotentialMoves(x, y, board) {
+        let moves = [];
+
+        moves.push(...getDiagonals(x, y, board));
+        moves.push(...getHorizontals(x, y, board));
         
         return moves;
     }
 }
 
 class Pawn extends ChessPiece {
-
+    
     constructor(isWhite, display) {
         super(isWhite, display, "P");
     }
