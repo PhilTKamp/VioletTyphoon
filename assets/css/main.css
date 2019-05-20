@@ -23,6 +23,12 @@ chesssquare {
     vertical-align: middle;
     font-size: 3em;
     color: #011638;
+    transition: 0.1s all;
+    cursor: pointer;
+}
+
+chesssquare:hover {
+    font-size: 3.25em;
 }
 
 chessrow:nth-child(odd) chesssquare:nth-child(odd),
