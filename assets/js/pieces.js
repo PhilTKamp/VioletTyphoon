@@ -179,8 +179,8 @@ function getHorizontals(x, y, board) {
     return moves;
 }
 
-function inBounds(x, y) {
-    if(x >= 0 && x < 8 && y >= 0 && y < 8)
+function inBounds(coord) {
+    if(coord.x >= 0 && coord.x < 8 && coord.y >= 0 && coord.y < 8)
         return true;
     else
         return false;
@@ -230,16 +230,14 @@ class King extends ChessPiece {
 
         for(let col = x - 1; col <= x + 1; col++) {
             for( let row = y - 1; row <= y + 1; row++) {
-                if(inBounds(col, row)) {
-                    moves.push({
-                        x : col,
-                        y : row 
-                    });
-                }
+                moves.push({
+                    x : col,
+                    y : row 
+                });
             }
         }
 
-        return moves;
+        return moves.filter(inBounds);
     }
 }
 
@@ -250,16 +248,18 @@ class Knight extends ChessPiece {
     }
 
     getPotentialMoves(x, y, board) {
-        const knightDeltas = [ [1, 3], [3, 1], [3, -1], [1, -3], [-1, -3], [-3, -1], [-3, 1], [3, -1] ];
+        const knightDeltas = [ [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2] ];
 
         let moves = knightDeltas.map((move) => {
             return {
                 x : x + move[0],
                 y : y + move[1]
             };
-        }).filter(inBounds);
+        }).filter((coord) => {
+            return (board.getPiece(coord.x, coord.y) ? board.getPiece(x, y).isWhite != board.getPiece(coord.x, coord.y).isWhite : true);
+        });
 
-        return moves;
+        return moves.filter(inBounds);
     }
 }
 
@@ -291,6 +291,7 @@ class Rook extends ChessPiece {
 }
 
 // Todo: Check for capturing, and not jumping pieces
+// Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
     constructor(isWhite, display) {
