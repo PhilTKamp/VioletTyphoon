@@ -245,6 +245,18 @@ class Queen extends ChessPiece {
     }
 }
 
+class Rook extends ChessPiece {
+    constructor(isWhite, display) {
+        super(isWhite, display, "R");
+    }
+
+    getPotentialMoves(x, y, board) {
+        let moves = [];
+        moves.push(...getHorizontals(x, y, board));
+        return moves;
+    }
+}
+
 class Pawn extends ChessPiece {
     
     constructor(isWhite, display) {
