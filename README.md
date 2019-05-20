@@ -1,2 +1,4 @@
 # VioletTyphoon
-Simple Javascript, HTML, and CSS game developed as a learning experience with omnitech
+Implementation of Chess in Javascript.
+
+Heavily utilizes object orientation as a means to learn more about Javascript's OOP principles.
