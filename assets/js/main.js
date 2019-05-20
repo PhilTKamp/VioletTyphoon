@@ -58,9 +58,12 @@ function drop(e)
     const parent = document.getElementById(parentID);
     
     let srcX, srcY, destX, destY;
+
     [srcX, srcY] = elementToCoordinates(parent);
     [destX, destY] = elementToCoordinates(e.target);
     gameboard.movePiece(srcX, srcY, destX, destY);
+
+    gameboard.printBoard();
 
     if(e.target.id != parentID)
     {
@@ -78,7 +81,7 @@ function dragstart(e)
 
 function elementToCoordinates(element)
 {
-    return element.id.split("_");
+    return element.id.split("_").map((val) => {return parseInt(val);});
 }
 
 let gameboard = new Chessboard();

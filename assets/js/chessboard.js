@@ -26,19 +26,16 @@ class Chessboard {
     }
 
     getPiece(x, y) {
-        return this._gameboard[y * this.width + x];
+        return this._gameboard[this.width * y + x];
     }
 
     setPiece(x, y, piece) {
-
         this._gameboard[y * this.width + x] = piece;
     }
 
     movePiece(srcX, srcY, destX, destY) {
         this.setPiece(destX, destY, this.getPiece(srcX, srcY));
         this.setPiece(srcX, srcY, null);
-        console.log(`${srcX}, ${srcY} -> ${destX}, ${destY}`);
-        console.log(`Piece: ${this.getPiece(srcX, srcY)}`);
     }
 
     getWhitePieces() {
@@ -74,6 +71,9 @@ class Chessboard {
         this.setPiece(5, 0, new Bishop(false, "♝"));
         this.setPiece(6, 0, new Knight(false, "♞"));
         this.setPiece(7, 0, new Rook(false, "♜"));
+        
+        for(let i = 0; i < 8; i++)
+            this.setPiece(i, 1, new Pawn(false, "♟"))
 
         this.setPiece(0, 7, new Rook(true, "♖"));
         this.setPiece(1, 7, new Knight(true, "♘"));
@@ -86,10 +86,7 @@ class Chessboard {
 
         for(let i = 0; i < 8; i++)
             this.setPiece(i, 6, new Pawn(true, "♙"))
-
-        for(let i = 0; i < 8; i++)
-            this.setPiece(i, 1, new Pawn(false, "♟"))
-    }
+    }    
 
     clearBoard() {
         for(let row = 0; row < 8; row++)
