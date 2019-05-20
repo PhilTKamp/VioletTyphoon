@@ -14,13 +14,18 @@ function getDiagonals(x, y, board) {
     // Quadrant I
     while(x + i < 8 && y + i < 8 && !stop)
     {
-        if(board[x + i][y + i]) 
-            stop = true;
-        
         moves.push({
             x : x + i,
             y : y + i
         });
+
+        if(board.getPiece(x + i, y + i)) 
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x + i, y + i).isWhite)
+                moves.pop();
+        }
+        
         i++;
     }
     
@@ -30,13 +35,18 @@ function getDiagonals(x, y, board) {
     // Quadrant II
     while(x - i >= 0 && y + i < 8 && !stop)
     {
-        if(board[x - i][y + i])
-            stop = true;
-        
         moves.push({
             x : x - i,
             y : y + i
         });
+        
+        if(board.getPiece(x - i, y + i))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x - i, y + i).isWhite)
+            moves.pop();
+        }
+        
         i++;
     }
     
@@ -46,13 +56,18 @@ function getDiagonals(x, y, board) {
     // Quadrant III
     while(x - i >= 0 && y - i >= 0 && !stop)
     {
-        if(board[x - i][y - i])
-            stop = true;
-        
         moves.push({
             x : x - i,
             y : y - i
         });
+        
+        if(board.getPiece(x - i, y - i))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x - i, y - i).isWhite)
+                moves.pop();
+        }
+
         i++;
     }
     
@@ -63,13 +78,18 @@ function getDiagonals(x, y, board) {
     // Quadrant IV
     while(x + i < 8 && y - i >= 0 && !stop)
     {
-        if(board[x + i][y - i])
-            stop = true;
-        
         moves.push({
             x : x + i,
             y : y - i
         });
+        
+        if(board.getPiece(x + i, y - i))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x + i, y - i).isWhite)
+            moves.pop();
+        }
+
         i++;
     }
     
@@ -83,13 +103,18 @@ function getHorizontals(x, y, board) {
     //Generate the horizontal and vertical moves
     while( i < 8 && !stop)
     {
-        if(board[x][i]) 
-            stop = true;
-
         moves.push({
             x : x,
             y : i
-        })
+        });
+
+        if(board.getPiece(x, i))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x, i).isWhite)
+                moves.pop();
+        }
+
         i++;
     }
 
@@ -98,26 +123,36 @@ function getHorizontals(x, y, board) {
     
     while(i >= 0 && !stop)
     {
-        if(board[x][i])
-            stop = true;
-        
         moves.push({
             x : x,
             y: i
-        })
+        });
+
+        if(board.getPiece(x, i))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(x, i).isWhite)
+                moves.pop();
+        }
+        
         i--;
     }
 
     i = x + 1
     while( i < 8 && !stop)
     {
-        if(board[i][y]) 
-            stop = true;
-
         moves.push({
             x : i,
             y : y
-        })
+        });
+
+        if(board.getPiece(i, y)) 
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(i, y).isWhite)
+                moves.pop();
+        }
+
         i++;
     }
 
@@ -126,17 +161,29 @@ function getHorizontals(x, y, board) {
     
     while(i >= 0 && !stop)
     {
-        if(board[i][y])
-            stop = true;
-        
         moves.push({
             x : i,
             y: y
-        })
+        });
+
+        if(board.getPiece(i, y))
+        {
+            stop = true;
+            if(board.getPiece(x, y).isWhite == board.getPiece(i, y).isWhite)
+                moves.pop();
+        }
+        
         i--;
     }
 
     return moves;
+}
+
+function inBounds(x, y) {
+    if(x >= 0 && x < 8 && y >= 0 && y < 8)
+        return true;
+    else
+        return false;
 }
 
 class ChessPiece {
@@ -183,7 +230,7 @@ class King extends ChessPiece {
 
         for(let col = x - 1; col <= x + 1; col++) {
             for( let row = y - 1; row <= y + 1; row++) {
-                if(row >= 0 && row < 8 && col >= 0 && row < 8) {
+                if(inBounds(col, row)) {
                     moves.push({
                         x : col,
                         y : row 
@@ -210,7 +257,7 @@ class Knight extends ChessPiece {
                 x : x + move[0],
                 y : y + move[1]
             };
-        })
+        }).filter(inBounds);
 
         return moves;
     }
