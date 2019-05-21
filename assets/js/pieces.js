@@ -279,8 +279,7 @@ class Pawn extends ChessPiece {
         let moves = [];
         
         if(this.color == colors.WHITE) {
-            if(!board.hasPiece(x, y-1))
-            {
+            if(!board.hasPiece(x, y-1)) {
                 moves.push({
                     x : x,
                     y : y - 1 
@@ -293,6 +292,20 @@ class Pawn extends ChessPiece {
                 //     });
                 // }
             }
+
+            if(board.hasPiece(x-1, y-1)) {
+                moves.push({
+                    x : x - 1,
+                    y : y - 1
+                });
+            }
+
+            if(board.hasPiece(x+1, y-1)) {
+                moves.push({
+                    x : x + 1,
+                    y : y - 1
+                });
+            }
         }
         else {
             if(!board.hasPiece(x, y+1)) {
@@ -300,7 +313,7 @@ class Pawn extends ChessPiece {
                     x : x,
                     y : y + 1
                 });
-
+                
                 // if(y == 1) {
                 //     moves.push({
                 //         x : x,
@@ -308,8 +321,24 @@ class Pawn extends ChessPiece {
                 //     });
                 // }
             }
-        }
+            
+            if(board.hasPiece(x-1, y+1)) {
+                moves.push({
+                    x : x - 1,
+                    y : y + 1
+                });
+            }
 
-        return moves;
+            if(board.hasPiece(x+1, y-1)) {
+                moves.push({
+                    x : x + 1,
+                    y : y + 1
+                });
+            }
+                
+        }
+        
+        return moves.filter(inBounds);
     }
 }
+
