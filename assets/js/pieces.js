@@ -237,7 +237,7 @@ class Knight extends ChessPiece {
                 y : y + move[1]
             };
         }).filter(inBounds).filter((coord) => {
-            return (board.hasPiece(coord.x, coord.y) ? alliedPieces(x, y, coord.x, coord.y, board) : true);
+            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(x, y, coord.x, coord.y, board) : true);
         });
 
         return moves;
