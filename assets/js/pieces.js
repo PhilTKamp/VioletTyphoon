@@ -328,7 +328,7 @@ class Pawn extends ChessPiece {
                 });
             }
 
-            if(board.hasPiece(x+1, y-1)) {
+            if(board.hasPiece(x+1, y+1)) {
                 moves.push({
                     x : x + 1,
                     y : y + 1
