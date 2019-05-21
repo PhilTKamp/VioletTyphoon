@@ -267,7 +267,6 @@ class Rook extends ChessPiece {
     }
 }
 
-// Todo: Check for capturing, and not jumping pieces
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
