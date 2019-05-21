@@ -74,12 +74,12 @@ function drop(e)
     if(e.target.id != parentID)
     {
         gameboard.movePiece(srcX, srcY, destX, destY);
-        gameboard.printBoard();
-
+        
         e.target.innerText = parent.innerText;
         parent.innerText = "";
     }
-
+    
+    gameboard.printBoard();
     this.style.border = "";
 }
 
