@@ -6,93 +6,71 @@
  * R = Rook, P = Pawn
  */
 
+function alliedPieces(x1, y1, x2, y2, board)
+{
+    return board.getPiece(x1, y1).color === board.getPiece(x2, y2).color;
+}
+
 function getDiagonals(x, y, board) {
     let i = 1;
-    let stop = false;
+    let stopQuadI = false;
+    let stopQuadII = false;
+    let stopQuadIIII = false;
+    let stopQuadIV = false;
 
-    //Iterate through each coordinate quadrant, centered on piece stopping    
-    // Quadrant I
-    while(x + i < 8 && y + i < 8 && !stop)
+    while( i < 7 )
     {
         moves.push({
             x : x + i,
             y : y + i
         });
 
-        if(board.getPiece(x + i, y + i)) 
+        if(board.hasPiece(x + i, y + i)) 
         {
             stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x + i, y + i).isWhite)
+            if( alliedPieces(x, y, x + i, y + i, board) )
                 moves.pop();
         }
         
-        i++;
-    }
-    
-    i = 1;
-    stop = false;
-    
-    // Quadrant II
-    while(x - i >= 0 && y + i < 8 && !stop)
-    {
         moves.push({
             x : x - i,
             y : y + i
         });
         
-        if(board.getPiece(x - i, y + i))
+        if(board.hasPiece(x - i, y + i))
         {
             stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x - i, y + i).isWhite)
-            moves.pop();
+            if(alliedPieces(x, y, x - i, y + i, board))
+                moves.pop();
         }
-        
-        i++;
-    }
-    
-    i = 1;
-    stop = false;
-    
-    // Quadrant III
-    while(x - i >= 0 && y - i >= 0 && !stop)
-    {
+
         moves.push({
             x : x - i,
             y : y - i
         });
         
-        if(board.getPiece(x - i, y - i))
+        if(board.hasPiece(x - i, y - i))
         {
             stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x - i, y - i).isWhite)
+            if( alliedPieces(x, y, x - i, y - i, board) )
                 moves.pop();
         }
 
-        i++;
-    }
-    
-    
-    i = 1;
-    stop = false;
-    
-    // Quadrant IV
-    while(x + i < 8 && y - i >= 0 && !stop)
-    {
         moves.push({
             x : x + i,
             y : y - i
         });
         
-        if(board.getPiece(x + i, y - i))
+        if(board.hasPiece(x + i, y - i))
         {
             stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x + i, y - i).isWhite)
+            if( alliedPieces(x, y, x + i, y - i, board) )
             moves.pop();
         }
 
         i++;
-    }
-    
+
+    }        
     return moves;
 }
 
@@ -186,10 +164,11 @@ function inBounds(coord) {
         return false;
 }
 
+// TODO Limit Piece moves based on check
 class ChessPiece {
-    constructor(isWhite, display, name) {
+    constructor(color, display, name) {
         this.name = name;
-        this.isWhite = isWhite;
+        this.color = color;
         this.display = display;
     }
 
@@ -198,7 +177,7 @@ class ChessPiece {
      * @param {in} y 
      * @param {in} board 
      * 
-     * @returns Oject array of each potential coodinate for a move form [{ x: val, y: val}]
+     * @returns Object array of each potential coodinate for a move form [{ x: val, y: val}]
      */
     getPotentialMoves(x, y, board) {
         console.log("getPossibleMoves not implemented");
@@ -207,22 +186,23 @@ class ChessPiece {
 }
 
 class Bishop extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "B");
+    constructor(color, display) {
+        super(color, display, "B");
     }
     
     getPotentialMoves(x, y, board) {
         let moves = [];
-
+        
         moves.push(...getDiagonals(x, y, board));
         
         return moves;
     }
 }
 
+// Todo: add castling logic, prevent from moving into check
 class King extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "K");
+    constructor(color, display) {
+        super(color, display, "K");
     }
 
     getPotentialMoves(x, y, board) {
@@ -241,10 +221,9 @@ class King extends ChessPiece {
     }
 }
 
-// Todo: add castling logic, prevent from moving into check
 class Knight extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "N");
+    constructor(color, display) {
+        super(color, display, "N");
     }
 
     getPotentialMoves(x, y, board) {
@@ -264,8 +243,8 @@ class Knight extends ChessPiece {
 }
 
 class Queen extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "Q");
+    constructor(color, display) {
+        super(color, display, "Q");
     }
     
     getPotentialMoves(x, y, board) {
@@ -279,8 +258,8 @@ class Queen extends ChessPiece {
 }
 
 class Rook extends ChessPiece {
-    constructor(isWhite, display) {
-        super(isWhite, display, "R");
+    constructor(color, display) {
+        super(color, display, "R");
     }
 
     getPotentialMoves(x, y, board) {
@@ -294,8 +273,8 @@ class Rook extends ChessPiece {
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
-    constructor(isWhite, display) {
-        super(isWhite, display, "P");
+    constructor(color, display) {
+        super(color, display, "P");
     }
     
     getPotentialMoves(x, y, board) {
