@@ -15,147 +15,141 @@ function getDiagonals(x, y, board) {
     let i = 1;
     let stopQuadI = false;
     let stopQuadII = false;
-    let stopQuadIIII = false;
+    let stopQuadIII = false;
     let stopQuadIV = false;
     let moves = [];
 
-    while( i < 7 )
-    {
-        moves.push({
-            x : x + i,
-            y : y + i
-        });
+    while( i < 8 ) {
+        if(!stopQuadI) {
+            moves.push({
+                x : x + i,
+                y : y + i
+            });
 
-        if(board.hasPiece(x + i, y + i)) 
-        {
-            stop = true;
-            if( alliedPieces(x, y, x + i, y + i, board) )
-                moves.pop();
-        }
-        
-        moves.push({
-            x : x - i,
-            y : y + i
-        });
-        
-        if(board.hasPiece(x - i, y + i))
-        {
-            stop = true;
-            if(alliedPieces(x, y, x - i, y + i, board))
-                moves.pop();
+            if(board.hasPiece(x + i, y + i)) 
+            {
+                stopQuadI = true;
+                if( alliedPieces(x, y, x + i, y + i, board) )
+                    moves.pop();
+            }
         }
 
-        moves.push({
-            x : x - i,
-            y : y - i
-        });
-        
-        if(board.hasPiece(x - i, y - i))
-        {
-            stop = true;
-            if( alliedPieces(x, y, x - i, y - i, board) )
-                moves.pop();
+        if(!stopQuadII) {
+            moves.push({
+                x : x - i,
+                y : y + i
+            });
+            
+            if(board.hasPiece(x - i, y + i))
+            {
+                stopQuadII = true;
+                if(alliedPieces(x, y, x - i, y + i, board))
+                    moves.pop();
+            }
         }
 
-        moves.push({
-            x : x + i,
-            y : y - i
-        });
-        
-        if(board.hasPiece(x + i, y - i))
-        {
-            stop = true;
-            if( alliedPieces(x, y, x + i, y - i, board) )
-            moves.pop();
+        if(!stopQuadIII) {
+            moves.push({
+                x : x - i,
+                y : y - i
+            });
+            
+
+            if(board.hasPiece(x - i, y - i))
+            {
+                stopQuadIII = true;
+                if( alliedPieces(x, y, x - i, y - i, board) )
+                    moves.pop();
+            }
+        }
+
+        if(!stopQuadIV) {
+            moves.push({
+                x : x + i,
+                y : y - i
+            });
+            
+            if(board.hasPiece(x + i, y - i))
+            {
+                stopQuadIV = true;
+                if( alliedPieces(x, y, x + i, y - i, board) )
+                moves.pop();
+            }
         }
 
         i++;
+    }
 
-    }        
     return moves.filter(inBounds);
 }
 
 function getHorizontals(x, y, board) {
     let moves = [];
+    let stopPosX = false;
+    let stopPosY = false;
+    let stopNegX = false;
+    let stopNegY = false;
 
-    let i = y + 1;
-    //Generate the horizontal and vertical moves
-    while( i < 8 && !stop)
+    for(let i = 1; i < 8; i++)
     {
-        moves.push({
-            x : x,
-            y : i
-        });
-
-        if(board.getPiece(x, i))
-        {
-            stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x, i).isWhite)
-                moves.pop();
-        }
-
-        i++;
-    }
-
-    stop = false;
-    i = y - 1;
+        if(!stopPosX) {
+            moves.push({
+                x : x + i,
+                y : y
+            });
     
-    while(i >= 0 && !stop)
-    {
-        moves.push({
-            x : x,
-            y: i
-        });
-
-        if(board.getPiece(x, i))
-        {
-            stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(x, i).isWhite)
-                moves.pop();
+            if(board.hasPiece(x + i, y))
+            {
+                stopPosX = true;
+                if(alliedPieces(x, y, x + i, y, board))
+                    moves.pop();
+            }
         }
         
-        i--;
-    }
-
-    i = x + 1
-    while( i < 8 && !stop)
-    {
-        moves.push({
-            x : i,
-            y : y
-        });
-
-        if(board.getPiece(i, y)) 
-        {
-            stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(i, y).isWhite)
-                moves.pop();
-        }
-
-        i++;
-    }
-
-    stop = false;
-    i = y - 1;
+        if(!stopPosY) {
+            moves.push({
+                x : x,
+                y : y + i
+            });
     
-    while(i >= 0 && !stop)
-    {
-        moves.push({
-            x : i,
-            y: y
-        });
-
-        if(board.getPiece(i, y))
-        {
-            stop = true;
-            if(board.getPiece(x, y).isWhite == board.getPiece(i, y).isWhite)
-                moves.pop();
+            if(board.hasPiece(x, y + i))
+            {
+                stopPosY = true;
+                if(alliedPieces(x, y, x, y + i, board))
+                    moves.pop();
+            }
         }
-        
-        i--;
+
+        if(!stopNegX) {
+            moves.push({
+                x : x - i,
+                y : y
+            });
+    
+            if(board.hasPiece(x - i, y))
+            {
+                stopNegX = true;
+                if(alliedPieces(x, y, x - i, y, board))
+                    moves.pop();
+            }
+        }
+
+        if(!stopNegY) {
+            moves.push({
+                x : x,
+                y : y - i
+            });
+    
+            if(board.hasPiece(x, y - i))
+            {
+                stopNegY = true;
+                if(alliedPieces(x, y, x, y - i, board))
+                    moves.pop();
+            }
+        }
     }
 
-    return moves;
+    return moves.filter(inBounds);
 }
 
 function inBounds(coord) {
