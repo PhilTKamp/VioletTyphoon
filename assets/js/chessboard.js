@@ -19,6 +19,7 @@ const colors = {
 class Chessboard {
     constructor() {
         this._gameboard = new Array(64);
+        this.pieces = new Array(0);
         this.height = 8;
         this.width = 8;
         this.clearBoard();
@@ -48,54 +49,39 @@ class Chessboard {
     }
 
     // Consider Refactor
-    getWhitePieces() {
-        let pieces = new Map(6);
-        pieces["K"] = new King(colors.WHITE, "♚")
-        pieces["Q"] = new Queen(colors.WHITE, "♛")
-        pieces["R"] = new Rook(colors.WHITE, "♜")
-        pieces["B"] = new Bishop(colors.WHITE, "♝")
-        pieces["N"] = new Knight(colors.WHITE, "♞")
-        pieces["P"] = new Pawn(colors.WHITE, "♟")
-        return pieces;
-    }
+    getBasePieces(color, displays) {
+        let pieces = new Array(0);
+        pieces.push( new Rook(0, color, displays[0]) );
+        pieces.push( new Knight(1, color, displays[1]) );
+        pieces.push( new Bishop(2, color, displays[2]) );
+        pieces.push( new King(3, color, displays[3]) );
+        pieces.push( new Queen(4, color, displays[4]) );
+        pieces.push( new Bishop(5, color, displays[5]) );
+        pieces.push( new Knight(6, color, displays[6]) );
+        pieces.push( new Rook(7, color, displays[7]) );
 
-    getBlackPieces() {
-        let pieces = new Map(6);
-        pieces["K"] = new King(colors.BLACK, "♔")
-        pieces["Q"] = new Queen(colors.BLACK, "♕")
-        pieces["R"] = new Rook(colors.BLACK, "♖")
-        pieces["B"] = new Bishop(colors.BLACK, "♗")
-        pieces["N"] = new Knight(colors.BLACK, "♘")
-        pieces["P"] = new Pawn(colors.BLACK, "♙")
+        for(let i = 0; i < 8; i++)
+            pieces.push( new Pawn(8 + i, color, displays[8]) );
+
         return pieces;
     }
 
     resetBoard() {
         this.clearBoard();
+        const blackDisplays = ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜", "♟" ];
+        const whiteDisplays = ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖", "♙" ];
 
-        this.setPiece(0, 0, new Rook(colors.BLACK, "♜"));
-        this.setPiece(1, 0, new Knight(colors.BLACK, "♞"));
-        this.setPiece(2, 0, new Bishop(colors.BLACK, "♝"));
-        this.setPiece(3, 0, new Queen(colors.BLACK, "♛"));
-        this.setPiece(4, 0, new King(colors.BLACK, "♚"));
-        this.setPiece(5, 0, new Bishop(colors.BLACK, "♝"));
-        this.setPiece(6, 0, new Knight(colors.BLACK, "♞"));
-        this.setPiece(7, 0, new Rook(colors.BLACK, "♜"));
-        
-        for(let i = 0; i < 8; i++)
-            this.setPiece(i, 1, new Pawn(colors.BLACK, "♟"))
+        let blackPieces = getBasePieces(colors.BLACK, blackDisplays);
 
-        this.setPiece(0, 7, new Rook(colors.WHITE, "♖"));
-        this.setPiece(1, 7, new Knight(colors.WHITE, "♘"));
-        this.setPiece(2, 7, new Bishop(colors.WHITE, "♗"));
-        this.setPiece(3, 7, new Queen(colors.WHITE, "♕"));
-        this.setPiece(4, 7, new King(colors.WHITE, "♔"));
-        this.setPiece(5, 7, new Bishop(colors.WHITE, "♗"));
-        this.setPiece(6, 7, new Knight(colors.WHITE, "♘"));
-        this.setPiece(7, 7, new Rook(colors.WHITE, "♖"));
+        blackPieces.forEach((piece, index) => {
+            this.setPiece(index / 8, index % 8, piece);
+        });
 
-        for(let i = 0; i < 8; i++)
-            this.setPiece(i, 6, new Pawn(colors.WHITE, "♙"))
+        let whitePieces = getBasePieces(colors.WHITE, whiteDisplays);
+
+        whitePieces.forEach((piece, index) => {
+            this.setPiece(6 + index / 8, index % 8, piece);
+        });
     }    
 
     clearBoard() {

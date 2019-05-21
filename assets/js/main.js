@@ -1,5 +1,6 @@
 // TODO uniquely identify each chessboard to allow for multiple boards on a page
 // TODO only apply the drag and drop to the squares with pieces on them
+// Rename drag and drop functions
 
 function createGUIChessBoard(gameboard)
 {
@@ -15,6 +16,7 @@ function createGUIChessBoard(gameboard)
             var cSquare = document.createElement("chesssquare");
             cSquare.id = `${col}_${row}`;
             cSquare.innerText = gameboard.getDisplay(col, row);
+            // Refactor
             cSquare.draggable = true;
             cSquare.addEventListener("dragover", dragover);
             cSquare.addEventListener("dragenter", dragenter);

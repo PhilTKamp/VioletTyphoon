@@ -166,10 +166,11 @@ function inBounds(coord) {
 
 // TODO Limit Piece moves based on check
 class ChessPiece {
-    constructor(color, display, name) {
+    constructor(color, display, name, id) {
         this.name = name;
         this.color = color;
         this.display = display;
+        this.id = id;
     }
 
     /** 
@@ -201,8 +202,8 @@ class Bishop extends ChessPiece {
 
 // Todo: add castling logic, prevent from moving into check
 class King extends ChessPiece {
-    constructor(color, display) {
-        super(color, display, "K");
+    constructor(id, color, display) {
+        super(id, color, display, "K");
     }
 
     getPotentialMoves(x, y, board) {
@@ -222,8 +223,8 @@ class King extends ChessPiece {
 }
 
 class Knight extends ChessPiece {
-    constructor(color, display) {
-        super(color, display, "N");
+    constructor(id, color, display) {
+        super(id, color, display, "N");
     }
 
     getPotentialMoves(x, y, board) {
@@ -243,8 +244,8 @@ class Knight extends ChessPiece {
 }
 
 class Queen extends ChessPiece {
-    constructor(color, display) {
-        super(color, display, "Q");
+    constructor(id, color, display) {
+        super(id, color, display, "Q");
     }
     
     getPotentialMoves(x, y, board) {
@@ -258,8 +259,8 @@ class Queen extends ChessPiece {
 }
 
 class Rook extends ChessPiece {
-    constructor(color, display) {
-        super(color, display, "R");
+    constructor(id, color, display) {
+        super(id, color, display, "R");
     }
 
     getPotentialMoves(x, y, board) {
@@ -273,8 +274,8 @@ class Rook extends ChessPiece {
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
-    constructor(color, display) {
-        super(color, display, "P");
+    constructor(id, color, display) {
+        super(id, color, display, "P");
     }
     
     getPotentialMoves(x, y, board) {
