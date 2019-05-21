@@ -286,12 +286,12 @@ class Pawn extends ChessPiece {
                     y : y - 1 
                 });
 
-                if(y == 6) {
-                    moves.push({ 
-                        x : x,
-                        y : y - 2 
-                    });
-                }
+                // if(y == 6) {
+                //     moves.push({ 
+                //         x : x,
+                //         y : y - 2 
+                //     });
+                // }
             }
         }
         else {
@@ -301,12 +301,12 @@ class Pawn extends ChessPiece {
                     y : y + 1
                 });
 
-                if(y == 1) {
-                    moves.push({
-                        x : x,
-                        y : y + 2
-                    });
-                }
+                // if(y == 1) {
+                //     moves.push({
+                //         x : x,
+                //         y : y + 2
+                //     });
+                // }
             }
         }
 
