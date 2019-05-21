@@ -283,7 +283,7 @@ class Pawn extends ChessPiece {
         let moves = [];
         
         if(this.color == colors.WHITE) {
-            if(!board.hasPiece(x, 5))
+            if(!board.hasPiece(x, y-1))
             {
                 moves.push({
                     x : x,
@@ -299,7 +299,7 @@ class Pawn extends ChessPiece {
             }
         }
         else {
-            if(!board.hasPiece(x, 2)) {
+            if(!board.hasPiece(x, y+1)) {
                 moves.push({
                     x : x,
                     y : y + 1
