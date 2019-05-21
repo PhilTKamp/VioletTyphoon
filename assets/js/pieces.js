@@ -17,6 +17,7 @@ function getDiagonals(x, y, board) {
     let stopQuadII = false;
     let stopQuadIIII = false;
     let stopQuadIV = false;
+    let moves = [];
 
     while( i < 7 )
     {
@@ -71,7 +72,7 @@ function getDiagonals(x, y, board) {
         i++;
 
     }        
-    return moves;
+    return moves.filter(inBounds);
 }
 
 function getHorizontals(x, y, board) {
@@ -235,11 +236,11 @@ class Knight extends ChessPiece {
                 x : x + move[0],
                 y : y + move[1]
             };
-        }).filter((coord) => {
-            return (board.getPiece(coord.x, coord.y) ? board.getPiece(x, y).isWhite != board.getPiece(coord.x, coord.y).isWhite : true);
+        }).filter(inBounds).filter((coord) => {
+            return (board.hasPiece(coord.x, coord.y) ? alliedPieces(x, y, coord.x, coord.y, board) : true);
         });
 
-        return moves.filter(inBounds);
+        return moves;
     }
 }
 
@@ -281,8 +282,8 @@ class Pawn extends ChessPiece {
     getPotentialMoves(x, y, board) {
         let moves = [];
         
-        if(this.isWhite) {
-            if(!board.getPiece(x, 5))
+        if(this.color == colors.WHITE) {
+            if(!board.hasPiece(x, 5))
             {
                 moves.push({
                     x : x,
@@ -298,7 +299,7 @@ class Pawn extends ChessPiece {
             }
         }
         else {
-            if(!board.getPiece(x, 2)) {
+            if(!board.hasPiece(x, 2)) {
                 moves.push({
                     x : x,
                     y : y + 1

@@ -30,6 +30,10 @@ class Chessboard {
         return this.turn;
     }
 
+    getValidMoves(x, y) {
+        return this.getPiece(x, y).getPotentialMoves(x, y, this);
+    }
+
     getDisplay(x, y) {
         if( this.getPiece(x, y) )
             return this.getPiece(x, y).display;
@@ -42,7 +46,7 @@ class Chessboard {
     }
 
     hasPiece(x, y) {
-        return ( board.getPiece(x + i, y + i) ? true : false );
+        return ( this.getPiece(x, y) ? true : false );
     }
 
     setPiece(x, y, piece) {
@@ -61,8 +65,8 @@ class Chessboard {
         pieces.push( new Rook(initID, color, displays[0]) );
         pieces.push( new Knight(initID + 1, color, displays[1]) );
         pieces.push( new Bishop(initID + 2, color, displays[2]) );
-        pieces.push( new King(initID + 3, color, displays[3]) );
-        pieces.push( new Queen(initID + 4, color, displays[4]) );
+        pieces.push( new Queen(initID + 4, color, displays[3]) );
+        pieces.push( new King(initID + 3, color, displays[4]) );
         pieces.push( new Bishop(initID + 5, color, displays[5]) );
         pieces.push( new Knight(initID + 6, color, displays[6]) );
         pieces.push( new Rook(initID + 7, color, displays[7]) );

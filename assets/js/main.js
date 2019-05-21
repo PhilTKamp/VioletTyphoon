@@ -16,6 +16,7 @@ function createGUIChessBoard(gameboard)
             var cSquare = document.createElement("chesssquare");
             cSquare.id = `${col}_${row}`;
             cSquare.innerText = gameboard.getDisplay(col, row);
+
             // Refactor
             cSquare.draggable = true;
             cSquare.addEventListener("dragover", dragover);
@@ -62,15 +63,19 @@ function drop(e)
     const parent = document.getElementById(parentID);
     
     let srcX, srcY, destX, destY;
-
     [srcX, srcY] = elementToCoordinates(parent);
     [destX, destY] = elementToCoordinates(e.target);
-    gameboard.movePiece(srcX, srcY, destX, destY);
 
-    gameboard.printBoard();
+    let potentialMoves = gameboard.getValidMoves(srcX, srcY);
+    potentialMoves.forEach(coord => {
+        document.getElementById(`${coord.x}_${coord.y}`).style.backgroundColor = "";
+    });
 
     if(e.target.id != parentID)
     {
+        gameboard.movePiece(srcX, srcY, destX, destY);
+        gameboard.printBoard();
+
         e.target.innerText = parent.innerText;
         parent.innerText = "";
     }
@@ -80,7 +85,14 @@ function drop(e)
 
 function dragstart(e)
 {
+    let potentialMoves = gameboard.getValidMoves(...elementToCoordinates(e.target));
+    potentialMoves.forEach(coord => {
+        document.getElementById(`${coord.x}_${coord.y}`).style.backgroundColor = "red";
+    });
+    
     e.dataTransfer.setData("ID", e.target.id);
+        
+    console.log(gameboard.getValidMoves(...elementToCoordinates(e.target)));
 }
 
 function elementToCoordinates(element)
