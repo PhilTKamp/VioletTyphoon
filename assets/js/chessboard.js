@@ -48,20 +48,19 @@ class Chessboard {
         this.setPiece(srcX, srcY, null);
     }
 
-    // Consider Refactor
-    getBasePieces(color, displays) {
+    getBasePieces(color, displays, initID) {
         let pieces = new Array(0);
-        pieces.push( new Rook(0, color, displays[0]) );
-        pieces.push( new Knight(1, color, displays[1]) );
-        pieces.push( new Bishop(2, color, displays[2]) );
-        pieces.push( new King(3, color, displays[3]) );
-        pieces.push( new Queen(4, color, displays[4]) );
-        pieces.push( new Bishop(5, color, displays[5]) );
-        pieces.push( new Knight(6, color, displays[6]) );
-        pieces.push( new Rook(7, color, displays[7]) );
+        pieces.push( new Rook(initID, color, displays[0]) );
+        pieces.push( new Knight(initID + 1, color, displays[1]) );
+        pieces.push( new Bishop(initID + 2, color, displays[2]) );
+        pieces.push( new King(initID + 3, color, displays[3]) );
+        pieces.push( new Queen(initID + 4, color, displays[4]) );
+        pieces.push( new Bishop(initID + 5, color, displays[5]) );
+        pieces.push( new Knight(initID + 6, color, displays[6]) );
+        pieces.push( new Rook(initID + 7, color, displays[7]) );
 
         for(let i = 0; i < 8; i++)
-            pieces.push( new Pawn(8 + i, color, displays[8]) );
+            pieces.push( new Pawn(initID + 8 + i, color, displays[8]) );
 
         return pieces;
     }
@@ -71,17 +70,22 @@ class Chessboard {
         const blackDisplays = ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜", "♟" ];
         const whiteDisplays = ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖", "♙" ];
 
-        let blackPieces = getBasePieces(colors.BLACK, blackDisplays);
-
+        let blackPieces = this.getBasePieces(colors.BLACK, blackDisplays, 0);
+        let whitePieces = this.getBasePieces(colors.WHITE, whiteDisplays, 16);
+        
         blackPieces.forEach((piece, index) => {
-            this.setPiece(index / 8, index % 8, piece);
+            let x = index % 8;
+            let y = Math.floor(index / 8);
+            this.setPiece(x, y, piece);
         });
-
-        let whitePieces = getBasePieces(colors.WHITE, whiteDisplays);
-
+        
         whitePieces.forEach((piece, index) => {
-            this.setPiece(6 + index / 8, index % 8, piece);
+            let x = index % 8;
+            let y = 7 - Math.floor(index / 8);
+            this.setPiece(x, y, piece);
         });
+
+        this.pieces = blackPieces.concat(whitePieces);
     }    
 
     clearBoard() {

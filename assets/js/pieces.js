@@ -166,7 +166,7 @@ function inBounds(coord) {
 
 // TODO Limit Piece moves based on check
 class ChessPiece {
-    constructor(color, display, name, id) {
+    constructor(id, color, display, name) {
         this.name = name;
         this.color = color;
         this.display = display;
@@ -187,8 +187,8 @@ class ChessPiece {
 }
 
 class Bishop extends ChessPiece {
-    constructor(color, display) {
-        super(color, display, "B");
+    constructor(id, color, display) {
+        super(id, color, display, "B");
     }
     
     getPotentialMoves(x, y, board) {
