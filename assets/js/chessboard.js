@@ -31,7 +31,10 @@ class Chessboard {
     }
 
     getValidMoves(x, y) {
-        return this.getPiece(x, y).getPotentialMoves(x, y, this);
+        if(this.getTurn() == this.getPiece(x, y).color)
+            return this.getPiece(x, y).getPotentialMoves(x, y, this);
+        else
+            return [];
     }
 
     getDisplay(x, y) {
@@ -58,6 +61,7 @@ class Chessboard {
         this.setPiece(srcX, srcY, null);
 
         this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
+        console.log(this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
     }
 
     getBasePieces(color, displays, initID) {
