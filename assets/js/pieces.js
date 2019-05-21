@@ -213,7 +213,9 @@ class King extends ChessPiece {
             }
         }
 
-        return moves.filter(inBounds);
+        return moves.filter(inBounds).filter((coord) => {
+            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(x, y, coord.x, coord.y, board) : true);
+        });
     }
 }
 
