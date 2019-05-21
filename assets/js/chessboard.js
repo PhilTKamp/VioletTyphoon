@@ -22,7 +22,12 @@ class Chessboard {
         this.pieces = new Array(0);
         this.height = 8;
         this.width = 8;
-        this.clearBoard();
+        this.turn = colors.WHITE;
+    }
+
+    getTurn()
+    {
+        return this.turn;
     }
 
     getDisplay(x, y) {
@@ -39,6 +44,7 @@ class Chessboard {
     hasPiece(x, y) {
         return ( board.getPiece(x + i, y + i) ? true : false );
     }
+
     setPiece(x, y, piece) {
         this._gameboard[y * this.width + x] = piece;
     }
@@ -46,6 +52,8 @@ class Chessboard {
     movePiece(srcX, srcY, destX, destY) {
         this.setPiece(destX, destY, this.getPiece(srcX, srcY));
         this.setPiece(srcX, srcY, null);
+
+        this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
     }
 
     getBasePieces(color, displays, initID) {
