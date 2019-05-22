@@ -34,14 +34,13 @@ class ChessboardGUI {
             for( let col = 0; col < 8; col++) {
                 this.chessSquares.push(new ChessSquare(row, col));
                 this.guiBoard.appendChild(this.getSquare(col, row).element);
-                this.setDroppable(col, row, true);
                 this.setDraggable(col, row, false);
             }
         }
     }
 
     getSquare(x, y) {
-        return this.chessSquares[parseInt(y) * 8 + parseInt(x)];
+        return this.chessSquares[y * 8 + x];
     }
 
     resetBoard() {
@@ -92,21 +91,34 @@ class ChessboardGUI {
     startPieceMove(e) {
         // Get the potential moves and highlight them
         e.dataTransfer.setData("text/plain", e.srcElement.innerHTML);
-        this.lastMove.srcX = e.target.dataset.x;
-        this.lastMove.srcY = e.target.dataset.y;
-    }
+        this.lastMove.srcX = parseInt(e.target.dataset.x);
+        this.lastMove.srcY = parseInt(e.target.dataset.y);
 
+        let potentialMoves = this.gameboard.getValidMoves(this.lastMove.srcX, this.lastMove.srcY);
+        potentialMoves.forEach(move => {
+            this.getSquare(move.x, move.y).backgroundColor = "red";
+            this.setDroppable(move.x, move.y, true);
+        });
+    }
+    
     dropPiece(e) {
         e.target.innerHTML = e.dataTransfer.getData("text");
-        this.lastMove.destX = e.target.dataset.x;
-        this.lastMove.destY = e.target.dataset.y;
+        this.lastMove.destX = parseInt(e.target.dataset.x);
+        this.lastMove.destY = parseInt(e.target.dataset.y);
         this.setDraggable(this.lastMove.destX, this.lastMove.destY, true);
     }
-
+    
     endPieceMove(e) {
         let {srcX, srcY, destX, destY} = this.lastMove;
+
+        let potentialMoves = this.gameboard.getValidMoves(srcX, srcY);
+        potentialMoves.forEach(move => {
+            this.getSquare(move.x, move.y).backgroundColor = "";
+            this.setDroppable(move.x, move.y, false);
+        });
         
-        if(srcX != destX || srcY != destY)
+        // CODE REVIEW: I 
+        if((srcX != destX || srcY != destY) && potentialMoves.find((v)=>{return v.x == destX && v.y == destY;}))
         {
             this.gameboard.movePiece(srcX, srcY, destX, destY);
             this.getSquare(srcX, srcY).innerHTML = "";
@@ -148,6 +160,10 @@ class ChessSquare {
     
     get element() {
         return this.htmlElement;
+    }
+
+    set backgroundColor(value) {
+        this.htmlElement.style.backgroundColor = value;
     }
 
     addListener(event, funct) {
