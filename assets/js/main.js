@@ -20,9 +20,10 @@ const displayValues = new Map([
 class ChessboardGUI {
     constructor(parentElement) {
         this.guiBoard = parentElement;
-        this.startPieceMove.bind(this);
-        this.dropPiece.bind(this);
-        this.endPieceMove.bind(this);
+        // Try overwriting the function with a bound reference
+        this.dropPieceCB = this.dropPiece.bind(this);
+        this.startPieceMoveCB = this.startPieceMove.bind(this);
+        this.endPieceMoveCB = this.endPieceMove.bind(this);
         this.chessSquares = new Array();
         this.gameboard = new Chessboard();
         this.lastMove = { srcX : -1, srcY : -1, destX : -1, destY : -1};
@@ -35,6 +36,7 @@ class ChessboardGUI {
                 this.chessSquares.push(new ChessSquare(row, col));
                 this.guiBoard.appendChild(this.getSquare(col, row).element);
                 this.setDraggable(col, row, false);
+                this.setDroppable(col, row, false);
             }
         }
     }
@@ -65,10 +67,10 @@ class ChessboardGUI {
 
     setDroppable(x, y, canDrop) {
         if(canDrop) {
-            this.getSquare(x, y).addListener("drop", this.dropPiece.bind(this));
+            this.getSquare(x, y).addListener("drop", this.dropPieceCB);
         }
         else {
-            this.getSquare(x, y).removeListener("drop", this.dropPiece);
+            this.getSquare(x, y).removeListener("drop", this.dropPieceCB);
 
         }
     }
@@ -77,13 +79,13 @@ class ChessboardGUI {
     {
         let thisSquare = this.getSquare(x, y);
         if(canDrag) {
-            thisSquare.addListener("dragstart", this.startPieceMove.bind(this));
-            thisSquare.addListener("dragend", this.endPieceMove.bind(this));
+            thisSquare.addListener("dragstart", this.startPieceMoveCB);
+            thisSquare.addListener("dragend", this.endPieceMoveCB);
             thisSquare.draggable = true;
         }
         else {
-            thisSquare.removeListener("dragstart", this.startPieceMove);
-            thisSquare.removeListener("dragend", this.endPieceMove);
+            thisSquare.removeListener("dragstart", this.startPieceMoveCB);
+            thisSquare.removeListener("dragend", this.endPieceMoveCB);
             thisSquare.draggable = false;            
         }
     }
@@ -110,7 +112,7 @@ class ChessboardGUI {
     
     endPieceMove(e) {
         let {srcX, srcY, destX, destY} = this.lastMove;
-
+        
         let potentialMoves = this.gameboard.getValidMoves(srcX, srcY);
         potentialMoves.forEach(move => {
             this.getSquare(move.x, move.y).backgroundColor = "";
