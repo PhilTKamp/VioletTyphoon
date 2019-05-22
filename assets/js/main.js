@@ -2,104 +2,165 @@
 // TODO only apply the drag and drop to the squares with pieces on them
 // Rename drag and drop functions
 
-function createGUIChessBoard(gameboard)
-{
-    var chessboardGUI = document.getElementsByTagName("chessboard")[0];
-    for(let row = 0; row < 8; row++)
-    {
-        var cRow = document.createElement("chessrow");
-        cRow.id = `row_${row}`;
-        chessboardGUI.appendChild(cRow);
+const displayValues = new Map([
+    ["blackP", "♟"],
+    ["blackN", "♞"],
+    ["blackB", "♝"],
+    ["blackR", "♜"],
+    ["blackQ", "♛"],
+    ["blackK", "♚"],
+    ["whiteP", "♙"],
+    ["whiteN", "♘"],
+    ["whiteB", "♗"],
+    ["whiteR", "♖"],
+    ["whiteQ", "♕"],
+    ["whiteK", "♔"]
+])
 
-        for(let col = 0; col < 8; col++)
-        {
-            var cSquare = document.createElement("chesssquare");
-            cSquare.id = `${col}_${row}`;
-            cSquare.innerText = gameboard.getDisplay(col, row);
+class ChessboardGUI {
+    constructor(parentElement) {
+        this.guiBoard = parentElement;
+        this.chessSquares = new Array();
+        this.gameboard = new Chessboard();
+        this.createBlankBoard();
+    }
 
-            // Refactor
-            cSquare.draggable = true;
-            cSquare.addEventListener("dragover", dragover);
-            cSquare.addEventListener("dragenter", dragenter);
-            cSquare.addEventListener("dragleave", dragleave);
-            cSquare.addEventListener("drop", drop);
-            cSquare.addEventListener("dragstart", dragstart);
-            cRow.appendChild(cSquare);
+    createBlankBoard() {
+        for(let row = 0; row < 8; row++) {
+            for( let col = 0; col < 8; col++) {
+                this.chessSquares.push(new ChessSquare(row, col));
+                this.guiBoard.appendChild(this.getSquare(col, row).element);
+            }
         }
     }
-}
 
-function updateChessboard (gameboard)
-{
-    for(let row = 0; row < 8; row++)
-    {
-        let cRow = document.getElementById(`row_${row}`);
-        for(let col = 0; col < 8; col++)
-        {
-            cRow.children[col].innerText = gameboard.getDisplay(col, row);
+    getSquare(x, y) {
+        return this.chessSquares[y * 8 + x];
+    }
+
+    resetBoard() {
+        this.gameboard.resetBoard();
+        this.updateChessboard();
+    }
+
+    updateChessboard() {
+        for(let row = 0; row < 8; row++)
+        {  
+            for(let col = 0; col < 8; col++)
+            {
+                if(this.gameboard.hasPiece(col, row))
+                {
+                    let displayKey = this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row);
+                    console.log(this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row));
+                    this.getSquare(col, row).innerHTML = displayValues.get(displayKey);
+                    this.getSquare(col, row).draggable = true;
+                }
+            }
         }
     }
+
+    movePiece(source, dest) {
+        dest.setInnerHTML( source.getInnerHTML());
+        source.setInnerHTML("");
+    }
 }
 
-function dragenter (e)
-{
-    this.style.border = "3px dashed #CB8589";
-}
-
-function dragover(e)
-{
-    e.preventDefault();
-}
-
-function dragleave(e)
-{
-    this.style.border = "";
-}
-
-function drop(e)
-{
-    e.preventDefault();
-    const parentID = e.dataTransfer.getData("ID");
-    const parent = document.getElementById(parentID);
-    
-    let srcX, srcY, destX, destY;
-    [srcX, srcY] = elementToCoordinates(parent);
-    [destX, destY] = elementToCoordinates(e.target);
-
-    let potentialMoves = gameboard.getValidMoves(srcX, srcY);
-    potentialMoves.forEach(coord => {
-        document.getElementById(`${coord.x}_${coord.y}`).style.backgroundColor = "";
-    });
-
-    if(e.target.id != parentID)
-    {
-        gameboard.movePiece(srcX, srcY, destX, destY);
+class ChessSquare {
+    constructor(row, col) {
+        this.htmlElement = document.createElement("chesssquare");
+        this.htmlElement.dataset.x = col;
+        this.htmlElement.dataset.y = row;
+        this.htmlElement.classList.add(( row % 2 == col % 2 ? "light" : "dark"));
+        this.copyPiece.bind(this);
         
-        e.target.innerText = parent.innerText;
-        parent.innerText = "";
+        // CODE REVIEW: Break these to new function?
+        this.htmlElement.addEventListener("dragover", (e)=>{e.preventDefault();});
+        this.htmlElement.addEventListener("dragenter", this.focusSquare.bind(this));
+        this.htmlElement.addEventListener("dragleave", this.unfocusSquare.bind(this));
+        this.htmlElement.addEventListener("drop", this.pastePiece.bind(this));
+        this.htmlElement.addEventListener("dragstart", this.stopDrag)
+        this.htmlElement.addEventListener("dragend", this.clearPiece.bind(this));
+        this.htmlElement.draggable = false;
+    }
+
+    get x() {
+        return this.htmlElement.dataset.x;
+    }
+
+    get y() {
+        return this.htmlElement.dataset.y;
+    }
+
+    set innerHTML(html) {
+        this.htmlElement.innerHTML = html;
+    }
+
+    get innerHTML() {
+        return this.htmlElement.innerHTML;
     }
     
-    gameboard.printBoard();
-    this.style.border = "";
-}
+    get element() {
+        return this.htmlElement;
+    }
 
-function dragstart(e)
-{
-    let potentialMoves = gameboard.getValidMoves(...elementToCoordinates(e.target));
-    potentialMoves.forEach(coord => {
-        document.getElementById(`${coord.x}_${coord.y}`).style.backgroundColor = "red";
-    });
+    set draggable(value) {
+        if(value) {
+            this.htmlElement.removeEventListener("dragstart", this.stopDrag);
+            this.htmlElement.addEventListener("dragstart", this.copyPiece);
+        }
+        else
+        {
+            this.htmlElement.removeEventListener("dragstart", this.copyPiece);
+            this.htmlElement.addEventListener("dragstart", this.stopDrag);
+        }
+
+        this.htmlElement.draggable = value;
+    }
+
+    get draggable() {
+        return this.htmlElement.draggable;
+    }
+
+    focusSquare() {
+        this.htmlElement.style.border = "3px dashed #CB8589";
+    }
+
+    unfocusSquare() {
+        this.htmlElement.style.border = "";
+    }
+
+    // CODE REVIEW: Function name
+    pastePiece(e) {
+        e.preventDefault();
+        this.unfocusSquare();
+
+        e.dataTransfer.setData("destX", this.x)
+        e.dataTransfer.setData("destY", this.y)
+        let html = e.dataTransfer.getData("innerHTML");
+        this.innerHTML = html;
+        this.draggable = true;
+    }
     
-    e.dataTransfer.setData("ID", e.target.id);
-        
-    console.log(gameboard.getValidMoves(...elementToCoordinates(e.target)));
+    // CODE REVIEW: Function name
+    copyPiece(e) {
+        e.dataTransfer.setData("innerHTML", this.innerHTML);
+        e.dataTransfer.setData("srcX", this.x)
+        e.dataTransfer.setData("srcY", this.y)
+    }
+    
+    // CODE REVIEW: Function name
+    clearPiece(e) {
+        if(this.x == e.dataTransfer.getData("destX") && this.y == e.dataTransfer.getData("destY") ) {
+            this.innerHTML = "";
+            this.draggable = false;
+        }
+    }
+
+    stopDrag(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
 }
 
-function elementToCoordinates(element)
-{
-    return element.id.split("_").map((val) => {return parseInt(val);});
-}
-
-let gameboard = new Chessboard();
-gameboard.resetBoard();
-createGUIChessBoard(gameboard);
+var board = new ChessboardGUI(document.getElementsByTagName("chessboard")[0]);
+board.resetBoard();

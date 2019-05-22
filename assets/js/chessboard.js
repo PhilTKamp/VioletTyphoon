@@ -37,11 +37,12 @@ class Chessboard {
             return [];
     }
 
-    getDisplay(x, y) {
-        if( this.getPiece(x, y) )
-            return this.getPiece(x, y).display;
-        else
-            return "";
+    getColor(x, y) {
+        return this.getPiece(x, y).color;
+    }
+
+    getPieceName(x, y) {
+        return this.getPiece(x, y).name;
     }
 
     getPiece(x, y) {
@@ -64,30 +65,28 @@ class Chessboard {
         console.log(this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
     }
 
-    getBasePieces(color, displays, initID) {
+    getBasePieces(color, initID) {
         let pieces = new Array(0);
-        pieces.push( new Rook(initID, color, displays[0]) );
-        pieces.push( new Knight(initID + 1, color, displays[1]) );
-        pieces.push( new Bishop(initID + 2, color, displays[2]) );
-        pieces.push( new Queen(initID + 4, color, displays[3]) );
-        pieces.push( new King(initID + 3, color, displays[4]) );
-        pieces.push( new Bishop(initID + 5, color, displays[5]) );
-        pieces.push( new Knight(initID + 6, color, displays[6]) );
-        pieces.push( new Rook(initID + 7, color, displays[7]) );
+        pieces.push( new Rook(initID, color) );
+        pieces.push( new Knight(initID + 1, color) );
+        pieces.push( new Bishop(initID + 2, color) );
+        pieces.push( new Queen(initID + 4, color) );
+        pieces.push( new King(initID + 3, color) );
+        pieces.push( new Bishop(initID + 5, color) );
+        pieces.push( new Knight(initID + 6, color) );
+        pieces.push( new Rook(initID + 7, color) );
 
         for(let i = 0; i < 8; i++)
-            pieces.push( new Pawn(initID + 8 + i, color, displays[8]) );
+            pieces.push( new Pawn(initID + 8 + i, color) );
 
         return pieces;
     }
 
     resetBoard() {
         this.clearBoard();
-        const blackDisplays = ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜", "♟" ];
-        const whiteDisplays = ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖", "♙" ];
 
-        let blackPieces = this.getBasePieces(colors.BLACK, blackDisplays, 0);
-        let whitePieces = this.getBasePieces(colors.WHITE, whiteDisplays, 16);
+        let blackPieces = this.getBasePieces(colors.BLACK, 0);
+        let whitePieces = this.getBasePieces(colors.WHITE, 16);
         
         blackPieces.forEach((piece, index) => {
             let x = index % 8;

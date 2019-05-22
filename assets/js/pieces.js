@@ -161,10 +161,9 @@ function inBounds(coord) {
 
 // TODO Limit Piece moves based on check
 class ChessPiece {
-    constructor(id, color, display, name) {
+    constructor(id, color, name) {
         this.name = name;
         this.color = color;
-        this.display = display;
         this.id = id;
     }
 
@@ -182,8 +181,8 @@ class ChessPiece {
 }
 
 class Bishop extends ChessPiece {
-    constructor(id, color, display) {
-        super(id, color, display, "B");
+    constructor(id, color) {
+        super(id, color, "B");
     }
     
     getPotentialMoves(x, y, board) {
@@ -197,8 +196,8 @@ class Bishop extends ChessPiece {
 
 // Todo: add castling logic, prevent from moving into check
 class King extends ChessPiece {
-    constructor(id, color, display) {
-        super(id, color, display, "K");
+    constructor(id, color) {
+        super(id, color, "K");
     }
 
     getPotentialMoves(x, y, board) {
@@ -220,8 +219,8 @@ class King extends ChessPiece {
 }
 
 class Knight extends ChessPiece {
-    constructor(id, color, display) {
-        super(id, color, display, "N");
+    constructor(id, color) {
+        super(id, color, "N");
     }
 
     getPotentialMoves(x, y, board) {
@@ -241,8 +240,8 @@ class Knight extends ChessPiece {
 }
 
 class Queen extends ChessPiece {
-    constructor(id, color, display) {
-        super(id, color, display, "Q");
+    constructor(id, color) {
+        super(id, color, "Q");
     }
     
     getPotentialMoves(x, y, board) {
@@ -256,8 +255,8 @@ class Queen extends ChessPiece {
 }
 
 class Rook extends ChessPiece {
-    constructor(id, color, display) {
-        super(id, color, display, "R");
+    constructor(id, color) {
+        super(id, color, "R");
     }
 
     getPotentialMoves(x, y, board) {
@@ -270,8 +269,8 @@ class Rook extends ChessPiece {
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
-    constructor(id, color, display) {
-        super(id, color, display, "P");
+    constructor(id, color) {
+        super(id, color, "P");
     }
     
     getPotentialMoves(x, y, board) {
