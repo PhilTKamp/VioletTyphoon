@@ -20,8 +20,12 @@ const displayValues = new Map([
 class ChessboardGUI {
     constructor(parentElement) {
         this.guiBoard = parentElement;
+        this.startPieceMove.bind(this);
+        this.dropPiece.bind(this);
+        this.endPieceMove.bind(this);
         this.chessSquares = new Array();
         this.gameboard = new Chessboard();
+        this.lastMove = { srcX : -1, srcY : -1, destX : -1, destY : -1};
         this.createBlankBoard();
     }
 
@@ -30,12 +34,14 @@ class ChessboardGUI {
             for( let col = 0; col < 8; col++) {
                 this.chessSquares.push(new ChessSquare(row, col));
                 this.guiBoard.appendChild(this.getSquare(col, row).element);
+                this.setDroppable(col, row, true);
+                this.setDraggable(col, row, false);
             }
         }
     }
 
     getSquare(x, y) {
-        return this.chessSquares[y * 8 + x];
+        return this.chessSquares[parseInt(y) * 8 + parseInt(x)];
     }
 
     resetBoard() {
@@ -51,17 +57,61 @@ class ChessboardGUI {
                 if(this.gameboard.hasPiece(col, row))
                 {
                     let displayKey = this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row);
-                    console.log(this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row));
                     this.getSquare(col, row).innerHTML = displayValues.get(displayKey);
-                    this.getSquare(col, row).draggable = true;
+                    this.setDraggable(col, row, true);
                 }
             }
         }
     }
 
-    movePiece(source, dest) {
-        dest.setInnerHTML( source.getInnerHTML());
-        source.setInnerHTML("");
+    setDroppable(x, y, canDrop) {
+        if(canDrop) {
+            this.getSquare(x, y).addListener("drop", this.dropPiece.bind(this));
+        }
+        else {
+            this.getSquare(x, y).removeListener("drop", this.dropPiece);
+
+        }
+    }
+
+    setDraggable(x, y, canDrag)
+    {
+        let thisSquare = this.getSquare(x, y);
+        if(canDrag) {
+            thisSquare.addListener("dragstart", this.startPieceMove.bind(this));
+            thisSquare.addListener("dragend", this.endPieceMove.bind(this));
+            thisSquare.draggable = true;
+        }
+        else {
+            thisSquare.removeListener("dragstart", this.startPieceMove);
+            thisSquare.removeListener("dragend", this.endPieceMove);
+            thisSquare.draggable = false;            
+        }
+    }
+
+    startPieceMove(e) {
+        // Get the potential moves and highlight them
+        e.dataTransfer.setData("text/plain", e.srcElement.innerHTML);
+        this.lastMove.srcX = e.target.dataset.x;
+        this.lastMove.srcY = e.target.dataset.y;
+    }
+
+    dropPiece(e) {
+        e.target.innerHTML = e.dataTransfer.getData("text");
+        this.lastMove.destX = e.target.dataset.x;
+        this.lastMove.destY = e.target.dataset.y;
+        this.setDraggable(this.lastMove.destX, this.lastMove.destY, true);
+    }
+
+    endPieceMove(e) {
+        let {srcX, srcY, destX, destY} = this.lastMove;
+        
+        if(srcX != destX || srcY != destY)
+        {
+            this.gameboard.movePiece(srcX, srcY, destX, destY);
+            this.getSquare(srcX, srcY).innerHTML = "";
+            this.setDraggable(srcX, srcY, false);
+        }
     }
 }
 
@@ -71,15 +121,12 @@ class ChessSquare {
         this.htmlElement.dataset.x = col;
         this.htmlElement.dataset.y = row;
         this.htmlElement.classList.add(( row % 2 == col % 2 ? "light" : "dark"));
-        this.copyPiece.bind(this);
         
         // CODE REVIEW: Break these to new function?
         this.htmlElement.addEventListener("dragover", (e)=>{e.preventDefault();});
         this.htmlElement.addEventListener("dragenter", this.focusSquare.bind(this));
         this.htmlElement.addEventListener("dragleave", this.unfocusSquare.bind(this));
-        this.htmlElement.addEventListener("drop", this.pastePiece.bind(this));
-        this.htmlElement.addEventListener("dragstart", this.stopDrag)
-        this.htmlElement.addEventListener("dragend", this.clearPiece.bind(this));
+        this.htmlElement.addEventListener("drop", this.unfocusSquare.bind(this));
         this.htmlElement.draggable = false;
     }
 
@@ -103,14 +150,20 @@ class ChessSquare {
         return this.htmlElement;
     }
 
+    addListener(event, funct) {
+        this.htmlElement.addEventListener(event, funct);
+    }
+
+    removeListener(event, funct) {
+        this.htmlElement.removeEventListener(event, funct);
+    }
+
     set draggable(value) {
         if(value) {
             this.htmlElement.removeEventListener("dragstart", this.stopDrag);
-            this.htmlElement.addEventListener("dragstart", this.copyPiece);
         }
         else
         {
-            this.htmlElement.removeEventListener("dragstart", this.copyPiece);
             this.htmlElement.addEventListener("dragstart", this.stopDrag);
         }
 
@@ -127,33 +180,6 @@ class ChessSquare {
 
     unfocusSquare() {
         this.htmlElement.style.border = "";
-    }
-
-    // CODE REVIEW: Function name
-    pastePiece(e) {
-        e.preventDefault();
-        this.unfocusSquare();
-
-        e.dataTransfer.setData("destX", this.x)
-        e.dataTransfer.setData("destY", this.y)
-        let html = e.dataTransfer.getData("innerHTML");
-        this.innerHTML = html;
-        this.draggable = true;
-    }
-    
-    // CODE REVIEW: Function name
-    copyPiece(e) {
-        e.dataTransfer.setData("innerHTML", this.innerHTML);
-        e.dataTransfer.setData("srcX", this.x)
-        e.dataTransfer.setData("srcY", this.y)
-    }
-    
-    // CODE REVIEW: Function name
-    clearPiece(e) {
-        if(this.x == e.dataTransfer.getData("destX") && this.y == e.dataTransfer.getData("destY") ) {
-            this.innerHTML = "";
-            this.draggable = false;
-        }
     }
 
     stopDrag(e) {
