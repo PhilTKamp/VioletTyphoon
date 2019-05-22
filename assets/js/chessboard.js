@@ -58,6 +58,11 @@ class Chessboard {
     }
 
     movePiece(srcX, srcY, destX, destY) {
+        if(this.hasPiece(destX, destY)) {
+            delete this.pieces[this.getPiece(destX, destY).id];
+        }
+        
+
         this.setPiece(destX, destY, this.getPiece(srcX, srcY));
         this.setPiece(srcX, srcY, null);
 
@@ -70,8 +75,8 @@ class Chessboard {
         pieces.push( new Rook(initID, color) );
         pieces.push( new Knight(initID + 1, color) );
         pieces.push( new Bishop(initID + 2, color) );
-        pieces.push( new Queen(initID + 4, color) );
-        pieces.push( new King(initID + 3, color) );
+        pieces.push( new Queen(initID + 3, color) );
+        pieces.push( new King(initID + 4, color) );
         pieces.push( new Bishop(initID + 5, color) );
         pieces.push( new Knight(initID + 6, color) );
         pieces.push( new Rook(initID + 7, color) );
