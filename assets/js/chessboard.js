@@ -17,9 +17,9 @@ const colors = {
 }
 
 class Chessboard {
-    constructor() {
-        this._gameboard = new Array(64);
-        this.pieces = new Array(0);
+    constructor(pieces = new Array(), emptyBoard = new Array(64)) {
+        this._gameboard = emptyBoard;
+        this.pieces = pieces;
         this.height = 8;
         this.width = 8;
         this.turn = colors.WHITE;
@@ -55,6 +55,11 @@ class Chessboard {
 
     setPiece(x, y, piece) {
         this._gameboard[y * this.width + x] = piece;
+    }
+
+    isKingInCheck(color)
+    {
+
     }
 
     movePiece(srcX, srcY, destX, destY) {
