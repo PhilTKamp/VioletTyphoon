@@ -21,9 +21,9 @@ class ChessboardGUI {
     constructor(parentElement) {
         this.guiBoard = parentElement;
         // Try overwriting the function with a bound reference
-        this.dropPieceCB = this.dropPiece.bind(this);
-        this.startPieceMoveCB = this.startPieceMove.bind(this);
-        this.endPieceMoveCB = this.endPieceMove.bind(this);
+        this.dropPieceBound = this.dropPiece.bind(this);
+        this.startPieceMoveBound = this.startPieceMove.bind(this);
+        this.endPieceMoveBound = this.endPieceMove.bind(this);
         this.chessSquares = new Array();
         this.gameboard = new Chessboard();
         this.lastMove = { srcX : -1, srcY : -1, destX : -1, destY : -1};
@@ -67,10 +67,10 @@ class ChessboardGUI {
 
     setDroppable(x, y, canDrop) {
         if(canDrop) {
-            this.getSquare(x, y).addListener("drop", this.dropPieceCB);
+            this.getSquare(x, y).addListener("drop", this.dropPieceBound);
         }
         else {
-            this.getSquare(x, y).removeListener("drop", this.dropPieceCB);
+            this.getSquare(x, y).removeListener("drop", this.dropPieceBound);
 
         }
     }
@@ -79,13 +79,13 @@ class ChessboardGUI {
     {
         let thisSquare = this.getSquare(x, y);
         if(canDrag) {
-            thisSquare.addListener("dragstart", this.startPieceMoveCB);
-            thisSquare.addListener("dragend", this.endPieceMoveCB);
+            thisSquare.addListener("dragstart", this.startPieceMoveBound);
+            thisSquare.addListener("dragend", this.endPieceMoveBound);
             thisSquare.draggable = true;
         }
         else {
-            thisSquare.removeListener("dragstart", this.startPieceMoveCB);
-            thisSquare.removeListener("dragend", this.endPieceMoveCB);
+            thisSquare.removeListener("dragstart", this.startPieceMoveBound);
+            thisSquare.removeListener("dragend", this.endPieceMoveBound);
             thisSquare.draggable = false;            
         }
     }
@@ -95,6 +95,8 @@ class ChessboardGUI {
         e.dataTransfer.setData("text/plain", e.srcElement.innerHTML);
         this.lastMove.srcX = parseInt(e.target.dataset.x);
         this.lastMove.srcY = parseInt(e.target.dataset.y);
+        this.lastMove.destX = this.lastMove.srcX;
+        this.lastMove.destY = this.lastMove.destY;
 
         let potentialMoves = this.gameboard.getValidMoves(this.lastMove.srcX, this.lastMove.srcY);
         potentialMoves.forEach(move => {
