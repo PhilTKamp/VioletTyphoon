@@ -1,6 +1,6 @@
 // TODO uniquely identify each chessboard to allow for multiple boards on a page
 // TODO only apply the drag and drop to the squares with pieces on them
-// Rename drag and drop functions
+// TODO Refactor chesssquares drag and drop functionality into ChessboardGUI class
 
 const displayValues = new Map([
     ["blackP", "♟"],
