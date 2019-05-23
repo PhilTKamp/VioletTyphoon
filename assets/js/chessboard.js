@@ -30,14 +30,6 @@ class Chessboard {
         return this.turn;
     }
 
-    getValidMoves(x, y) {
-        let piece = this.getPiece(x, y);
-        if(this.getTurn() == piece.color)
-            return piece.getPotentialMoves(this);
-        else
-            return [];
-    }
-
     getColor(x, y) {
         return this.getPiece(x, y).color;
     }
@@ -45,17 +37,13 @@ class Chessboard {
     getPieceName(x, y) {
         return this.getPiece(x, y).name;
     }
-
-    getPiece(x, y) {
-        return this._gameboard[this.width * y + x];
-    }
-
+    
     getCoordinates(piece) {
         return {x : piece.x, y : piece.y};
     }
 
-    hasPiece(x, y) {
-        return ( this.getPiece(x, y) ? true : false );
+    getPiece(x, y) {
+        return this._gameboard[this.width * y + x];
     }
 
     setPiece(x, y, piece) {
@@ -67,14 +55,58 @@ class Chessboard {
         this._gameboard[y * this.width + x] = piece;
     }
 
-    isKingInCheck(color)
-    {
-        let king = this.pieces.find((p) => {return p.color == color && p.name == "K"});
+    hasPiece(x, y) {
+        return ( this.getPiece(x, y) ? true : false );
+    }
+
+    getValidMoves(x, y) {
+        let piece = this.getPiece(x, y);
+        if(this.getTurn() == piece.color) {
+            let moves = piece.getPotentialMoves(this);
+            return moves.filter((move)=> {return !this.moveCausesCheck(piece, move);});
+        }
+        else {
+            return [];
+        }
+    }
+
+    movePiece(srcX, srcY, destX, destY) {
+        if(this.hasPiece(destX, destY)) {
+            delete this.pieces[this.getPiece(destX, destY).id];
+        }  
+
+        this.setPiece(destX, destY, this.getPiece(srcX, srcY));
+        this.setPiece(srcX, srcY, undefined);
+
+        this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
+    }
+
+    moveCausesCheck(piece, move) {
+        let originalPosition = { x: piece.x, y: piece.y };
+        let preservedPiece;
+
+        if(this.hasPiece(move.x, move.y))
+            preservedPiece = this.getPiece(move.x, move.y);
+
+        this.movePiece(piece.x, piece.y, move.x, move.y);
+
+        let isInCheck = this.isKingInCheck(piece.color);
+
+        this.movePiece(piece.x, piece.y, originalPosition.x, originalPosition.y);
+
+        if(preservedPiece)
+            this.setPiece(move.x, move.y, preservedPiece);
+
+        return isInCheck;
+    }
+
+    isKingInCheck(color) {
+        let king = this.pieces.find((p) => {return p && p.color == color && p.name == "K"});
 
         for(let y = 0; y < this.height; y++) {
             for(let x = 0; x < this.width; x++) {
                 if( this.hasPiece(x, y) ) {
-                    if(canCapture(this.getPiece(x, y), king))
+                    if(this.canCapture(this.getPiece(x, y), king))
                         return true;
                 }
             }
@@ -90,17 +122,6 @@ class Chessboard {
             return true;
         else
             return false;
-    }
-
-    movePiece(srcX, srcY, destX, destY) {
-        if(this.hasPiece(destX, destY)) {
-            delete this.pieces[this.getPiece(destX, destY).id];
-        }  
-
-        this.setPiece(destX, destY, this.getPiece(srcX, srcY));
-        this.setPiece(srcX, srcY, undefined);
-
-        this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
     }
 
     getStandardStartingPieces(color, initID) {
