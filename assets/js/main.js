@@ -3,19 +3,33 @@
 // TODO Refactor chesssquares drag and drop functionality into ChessboardGUI class
 // Convert row/col to x/y
 const displayValues = new Map([
-    ["blackP", "♟"],
-    ["blackN", "♞"],
-    ["blackB", "♝"],
-    ["blackR", "♜"],
-    ["blackQ", "♛"],
-    ["blackK", "♚"],
-    ["whiteP", "♙"],
-    ["whiteN", "♘"],
-    ["whiteB", "♗"],
-    ["whiteR", "♖"],
-    ["whiteQ", "♕"],
-    ["whiteK", "♔"]
-])
+    ["blackP", '<p class="black">P</p>'],
+    ["blackN", '<p class="black">N</p>'],
+    ["blackB", '<p class="black">B</p>'],
+    ["blackR", '<p class="black">R</p>'],
+    ["blackQ", '<p class="black">Q</p>'],
+    ["blackK", '<p class="black">K</p>'],
+    ["whiteP", '<p class="white">P</p>'],
+    ["whiteN", '<p class="white">N</p>'],
+    ["whiteB", '<p class="white">B</p>'],
+    ["whiteR", '<p class="white">R</p>'],
+    ["whiteQ", '<p class="white">Q</p>'],
+    ["whiteK", '<p class="white">K</p>']
+]);
+// const displayValues = new Map([
+//     ["blackP", "♟"],
+//     ["blackN", "♞"],
+//     ["blackB", "♝"],
+//     ["blackR", "♜"],
+//     ["blackQ", "♛"],
+//     ["blackK", "♚"],
+//     ["whiteP", "♙"],
+//     ["whiteN", "♘"],
+//     ["whiteB", "♗"],
+//     ["whiteR", "♖"],
+//     ["whiteQ", "♕"],
+//     ["whiteK", "♔"]
+// ]);
 
 class ChessboardGUI {
     constructor(parentElement) {
@@ -60,7 +74,7 @@ class ChessboardGUI {
                 if(this.gameboard.hasPiece(col, row))
                 {
                     let displayKey = this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row);
-                    this.getSquare(col, row).innerHTML = "<p>" + displayValues.get(displayKey) + "</p>";
+                    this.getSquare(col, row).innerHTML = displayValues.get(displayKey);
                     this.setDraggable(col, row, true);
                 }
             }
