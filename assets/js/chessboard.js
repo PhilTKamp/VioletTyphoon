@@ -69,11 +69,14 @@ class Chessboard {
     }
 
     movePiece(srcX, srcY, destX, destY) {
+        let piece = this.getPiece(srcX, srcY);
+        piece.hasMoved = true;
+
         if(this.hasPiece(destX, destY)) {
             delete this.pieces[this.getPiece(destX, destY).id];
         }  
 
-        this.setPiece(destX, destY, this.getPiece(srcX, srcY));
+        this.setPiece(destX, destY, piece);
         this.setPiece(srcX, srcY, undefined);
 
         this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
