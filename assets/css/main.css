@@ -1,3 +1,22 @@
+body {
+    background-color: #36393B;
+}
+
+.center-wrap {
+    position: relative;
+    height: 100%;
+    width: 100%
+}
+
+.center {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
 chessboard {
     display: grid;
     border: solid 1px #000000;
