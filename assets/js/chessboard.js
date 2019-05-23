@@ -74,14 +74,8 @@ class Chessboard {
         for(let y = 0; y < this.height; y++) {
             for(let x = 0; x < this.width; x++) {
                 if( this.hasPiece(x, y) ) {
-                    let potentialMoves = this.getPiece(x, y).getPotentialMoves(this);
-                    if(potentialMoves.find((c)=>{
-                            if(this.hasPiece(c.x, c.y))
-                                return king.id == this.getPiece(c.x, c.y).id;
-                        })) {
-                    
+                    if(canCapture(this.getPiece(x, y), king))
                         return true;
-                    }
                 }
             }
         }
@@ -91,12 +85,11 @@ class Chessboard {
 
     canCapture(attacker, victim) {
         let potentialMoves = attacker.getPotentialMoves(this);
-        for(move in potentialMoves) {
-            if(move.x == victim.x && move.y == victim.y)
-                return true;
-        }
-
-        return false;
+        let moveToCapture = potentialMoves.find((move)=>{return move.x == victim.x && move.y == victim.y});
+        if(moveToCapture)
+            return true;
+        else
+            return false;
     }
 
     movePiece(srcX, srcY, destX, destY) {
