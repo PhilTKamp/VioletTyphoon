@@ -162,12 +162,13 @@ function inBounds(coord) {
 }
 
 class ChessPiece {
-    constructor(id, color, name, x = -1, y = -1) {
+    constructor(id, color, name, x = -1, y = -1, hasMoved = false) {
         this.id = id;
         this.color = color;
         this.name = name;
         this.x = x;
         this.y = y;
+        this.hasMoved = hasMoved;
     }
 
     /** 
@@ -184,8 +185,8 @@ class ChessPiece {
 }
 
 class Bishop extends ChessPiece {
-    constructor(id, color, x, y) {
-        super(id, color, "B", x, y);
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "B", x, y, hasMoved);
     }
     
     getPotentialMoves(board) {
@@ -199,8 +200,8 @@ class Bishop extends ChessPiece {
 
 // Todo: add castling logic
 class King extends ChessPiece {
-    constructor(id, color, x, y) {
-        super(id, color, "K", x, y);
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "K", x, y, hasMoved);
     }
 
     getPotentialMoves(board) {
@@ -222,8 +223,8 @@ class King extends ChessPiece {
 }
 
 class Knight extends ChessPiece {
-    constructor(id, color, x, y) {
-        super(id, color, "N");
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "N", x, y, hasMoved);
     }
 
     getPotentialMoves(board) {
@@ -243,8 +244,8 @@ class Knight extends ChessPiece {
 }
 
 class Queen extends ChessPiece {
-    constructor(id, color, x, y) {
-        super(id, color, "Q", x, y);
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "Q", x, y, hasMoved);
     }
     
     getPotentialMoves(board) {
@@ -258,8 +259,8 @@ class Queen extends ChessPiece {
 }
 
 class Rook extends ChessPiece {
-    constructor(id, color, x, y) {
-        super(id, color, "R", x, y);
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "R", x, y, hasMoved);
     }
 
     getPotentialMoves(board) {
@@ -272,8 +273,8 @@ class Rook extends ChessPiece {
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
-    constructor(id, color, x, y) {
-        super(id, color, "P", x, y);
+    constructor(id, color, x, y, hasMoved) {
+        super(id, color, "P", x, y, hasMoved);
     }
     
     getPotentialMoves(board) {
@@ -286,7 +287,7 @@ class Pawn extends ChessPiece {
                     y : this.y - 1 
                 });
 
-                // if(this.y == 6) {
+                // if(!this.hasMoved) {
                 //     moves.push({ 
                 //         x : this.x,
                 //         y : this.y - 2 
@@ -315,7 +316,7 @@ class Pawn extends ChessPiece {
                     y : this.y + 1
                 });
                 
-                // if(this.y == 1) {
+                // if(!this.hasMoved) {
                 //     moves.push({
                 //         x : this.x,
                 //         y : this.y + 2
