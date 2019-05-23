@@ -55,6 +55,7 @@ chesssquare p {
     left: 0;
     margin: auto;
     font-family: beonmedium;
+    z-index: -1;
 }
 
 chesssquare p.black {
