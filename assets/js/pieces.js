@@ -6,6 +6,8 @@
  * R = Rook, P = Pawn
  */
 
+//  TODO: Extract if statement function from Pawn, King and Knight Potential Moves
+
 function alliedPieces(x1, y1, x2, y2, board)
 {
     return board.getPiece(x1, y1).color === board.getPiece(x2, y2).color;
@@ -176,7 +178,7 @@ class ChessPiece {
      * 
      * @returns Object array of each potential coodinate for a move form [{ x: val, y: val}]
      */
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         console.log("getPossibleMoves not implemented");
         return new Array(0);
     }
@@ -187,10 +189,10 @@ class Bishop extends ChessPiece {
         super(id, color, "B", x, y);
     }
     
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         let moves = [];
         
-        moves.push(...getDiagonals(x, y, board));
+        moves.push(...getDiagonals(this.x, this.y, board));
         
         return moves;
     }
@@ -202,11 +204,11 @@ class King extends ChessPiece {
         super(id, color, "K", x, y);
     }
 
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         let moves = [];
 
-        for(let col = x - 1; col <= x + 1; col++) {
-            for( let row = y - 1; row <= y + 1; row++) {
+        for(let col = this.x - 1; col <= this.x + 1; col++) {
+            for( let row = this.y - 1; row <= this.y + 1; row++) {
                 moves.push({
                     x : col,
                     y : row 
@@ -215,7 +217,7 @@ class King extends ChessPiece {
         }
 
         return moves.filter(inBounds).filter((coord) => {
-            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(x, y, coord.x, coord.y, board) : true);
+            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(this.x, this.y, coord.x, coord.y, board) : true);
         });
     }
 }
@@ -225,16 +227,16 @@ class Knight extends ChessPiece {
         super(id, color, "N");
     }
 
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         const knightDeltas = [ [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2] ];
 
         let moves = knightDeltas.map((move) => {
             return {
-                x : x + move[0],
-                y : y + move[1]
+                x : this.x + move[0],
+                y : this.y + move[1]
             };
         }).filter(inBounds).filter((coord) => {
-            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(x, y, coord.x, coord.y, board) : true);
+            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(this.x, this.y, coord.x, coord.y, board) : true);
         });
 
         return moves;
@@ -243,14 +245,14 @@ class Knight extends ChessPiece {
 
 class Queen extends ChessPiece {
     constructor(id, color, x, y) {
-        super(id, x, y, color, "Q");
+        super(id, color, "Q", x, y);
     }
     
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         let moves = [];
 
-        moves.push(...getDiagonals(x, y, board));
-        moves.push(...getHorizontals(x, y, board));
+        moves.push(...getDiagonals(this.x, this.y, board));
+        moves.push(...getHorizontals(this.x, this.y, board));
         
         return moves;
     }
@@ -261,9 +263,9 @@ class Rook extends ChessPiece {
         super(id, color, "R", x, y);
     }
 
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         let moves = [];
-        moves.push(...getHorizontals(x, y, board));
+        moves.push(...getHorizontals(this.x, this.y, board));
         return moves;
     }
 }
@@ -275,71 +277,71 @@ class Pawn extends ChessPiece {
         super(id, color, "P", x, y);
     }
     
-    getPotentialMoves(x, y, board) {
+    getPotentialMoves(board) {
         let moves = [];
         
         if(this.color == colors.WHITE) {
-            if(!board.hasPiece(x, y-1)) {
+            if(!board.hasPiece(this.x, this.y-1)) {
                 moves.push({
-                    x : x,
-                    y : y - 1 
+                    x : this.x,
+                    y : this.y - 1 
                 });
 
-                // if(y == 6) {
+                // if(this.y == 6) {
                 //     moves.push({ 
-                //         x : x,
-                //         y : y - 2 
+                //         x : this.x,
+                //         y : this.y - 2 
                 //     });
                 // }
             }
 
-            if(board.hasPiece(x-1, y-1)) {
+            if(board.hasPiece(this.x-1, this.y-1)) {
                 moves.push({
-                    x : x - 1,
-                    y : y - 1
+                    x : this.x - 1,
+                    y : this.y - 1
                 });
             }
 
-            if(board.hasPiece(x+1, y-1)) {
+            if(board.hasPiece(this.x+1, this.y-1)) {
                 moves.push({
-                    x : x + 1,
-                    y : y - 1
+                    x : this.x + 1,
+                    y : this.y - 1
                 });
             }
         }
         else {
-            if(!board.hasPiece(x, y+1)) {
+            if(!board.hasPiece(this.x, this.y+1)) {
                 moves.push({
-                    x : x,
-                    y : y + 1
+                    x : this.x,
+                    y : this.y + 1
                 });
                 
-                // if(y == 1) {
+                // if(this.y == 1) {
                 //     moves.push({
-                //         x : x,
-                //         y : y + 2
+                //         x : this.x,
+                //         y : this.y + 2
                 //     });
                 // }
             }
             
-            if(board.hasPiece(x-1, y+1)) {
+            if(board.hasPiece(this.x-1, this.y+1)) {
                 moves.push({
-                    x : x - 1,
-                    y : y + 1
+                    x : this.x - 1,
+                    y : this.y + 1
                 });
             }
 
-            if(board.hasPiece(x+1, y+1)) {
+            if(board.hasPiece(this.x+1, this.y+1)) {
                 moves.push({
-                    x : x + 1,
-                    y : y + 1
+                    x : this.x + 1,
+                    y : this.y + 1
                 });
             }
                 
         }
         
         return moves.filter(inBounds).filter((coord) => {
-            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(x, y, coord.x, coord.y, board) : true);
+            return (board.hasPiece(coord.x, coord.y) ? !alliedPieces(this.x, this.y, coord.x, coord.y, board) : true);
         });;
     }
 }

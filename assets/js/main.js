@@ -1,7 +1,7 @@
 // TODO uniquely identify each chessboard to allow for multiple boards on a page
 // TODO only apply the drag and drop to the squares with pieces on them
 // TODO Refactor chesssquares drag and drop functionality into ChessboardGUI class
-
+// Convert row/col to x/y
 const displayValues = new Map([
     ["blackP", "♟"],
     ["blackN", "♞"],
@@ -20,10 +20,12 @@ const displayValues = new Map([
 class ChessboardGUI {
     constructor(parentElement) {
         this.guiBoard = parentElement;
+
         // Try overwriting the function with a bound reference
         this.dropPieceBound = this.dropPiece.bind(this);
         this.startPieceMoveBound = this.startPieceMove.bind(this);
         this.endPieceMoveBound = this.endPieceMove.bind(this);
+        
         this.chessSquares = new Array();
         this.gameboard = new Chessboard();
         this.lastMove = { srcX : -1, srcY : -1, destX : -1, destY : -1};
@@ -114,20 +116,22 @@ class ChessboardGUI {
     
     endPieceMove(e) {
         let {srcX, srcY, destX, destY} = this.lastMove;
-        
+        // Breakout
         let potentialMoves = this.gameboard.getValidMoves(srcX, srcY);
         potentialMoves.forEach(move => {
             this.getSquare(move.x, move.y).backgroundColor = "";
             this.setDroppable(move.x, move.y, false);
         });
         
-        // CODE REVIEW: I 
+        // CODE REVIEW: isMovingToPotentialSpot, ifHasMoved
         if((srcX != destX || srcY != destY) && potentialMoves.find((v)=>{return v.x == destX && v.y == destY;}))
         {
             this.gameboard.movePiece(srcX, srcY, destX, destY);
             this.getSquare(srcX, srcY).innerHTML = "";
             this.setDraggable(srcX, srcY, false);
         }
+
+        // if(this.gameboard.isKingInCheck)
     }
 }
 
@@ -195,6 +199,7 @@ class ChessSquare {
     }
 
     focusSquare() {
+        // Add focused Class or Extract to constant
         this.htmlElement.style.border = "3px dashed #CB8589";
     }
 

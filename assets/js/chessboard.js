@@ -17,12 +17,12 @@ const colors = {
 }
 
 class Chessboard {
-    constructor(pieces = new Array(), emptyBoard = new Array(64)) {
+    constructor(pieces = [], emptyBoard = []) {
         this._gameboard = emptyBoard;
         this.pieces = pieces;
         this.height = 8;
         this.width = 8;
-        this.turn = colors.WHITE;
+        this.turn = colors.WHITE
     }
 
     getTurn()
@@ -31,8 +31,9 @@ class Chessboard {
     }
 
     getValidMoves(x, y) {
-        if(this.getTurn() == this.getPiece(x, y).color)
-            return this.getPiece(x, y).getPotentialMoves(x, y, this);
+        let piece = this.getPiece(x, y);
+        if(this.getTurn() == piece.color)
+            return piece.getPotentialMoves(this);
         else
             return [];
     }
@@ -49,34 +50,68 @@ class Chessboard {
         return this._gameboard[this.width * y + x];
     }
 
+    getCoordinates(piece) {
+        return {x : piece.x, y : piece.y};
+    }
+
     hasPiece(x, y) {
         return ( this.getPiece(x, y) ? true : false );
     }
 
     setPiece(x, y, piece) {
+        if(piece) {
+            piece.x = x;
+            piece.y = y;
+        }
+
         this._gameboard[y * this.width + x] = piece;
     }
 
     isKingInCheck(color)
     {
+        let king = this.pieces.find((p) => {return p.color == color && p.name == "K"});
 
+        for(let y = 0; y < this.height; y++) {
+            for(let x = 0; x < this.width; x++) {
+                if( this.hasPiece(x, y) ) {
+                    let potentialMoves = this.getPiece(x, y).getPotentialMoves(this);
+                    if(potentialMoves.find((c)=>{
+                            if(this.hasPiece(c.x, c.y))
+                                return king.id == this.getPiece(c.x, c.y).id;
+                        })) {
+                    
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    canCapture(attacker, victim) {
+        let potentialMoves = attacker.getPotentialMoves(this);
+        for(move in potentialMoves) {
+            if(move.x == victim.x && move.y == victim.y)
+                return true;
+        }
+
+        return false;
     }
 
     movePiece(srcX, srcY, destX, destY) {
         if(this.hasPiece(destX, destY)) {
             delete this.pieces[this.getPiece(destX, destY).id];
-        }
-        
+        }  
 
         this.setPiece(destX, destY, this.getPiece(srcX, srcY));
-        this.setPiece(srcX, srcY, null);
+        this.setPiece(srcX, srcY, undefined);
 
         this.turn = (this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
-        console.log(this.turn == colors.WHITE ? colors.BLACK : colors.WHITE);
     }
 
-    getBasePieces(color, initID) {
-        let pieces = new Array(0);
+    getStandardStartingPieces(color, initID) {
+        let pieces = new Array();
         pieces.push( new Rook(initID, color) );
         pieces.push( new Knight(initID + 1, color) );
         pieces.push( new Bishop(initID + 2, color) );
@@ -92,35 +127,39 @@ class Chessboard {
         return pieces;
     }
 
+    // Refactor to an initialize board
     resetBoard() {
         this.clearBoard();
+        this.initializeBoard();
+    }
+    
+    indexToCoordinates(index)
+    {
+        let x = index % this.width;
+        let y = Math.floor(index / this.width);
+        return {x, y};
+    }
 
-        let blackPieces = this.getBasePieces(colors.BLACK, 0);
-        let whitePieces = this.getBasePieces(colors.WHITE, 16);
+    initializeBoard() {
+        let blackPieces = this.getStandardStartingPieces(colors.BLACK, 0);
+        let whitePieces = this.getStandardStartingPieces(colors.WHITE, 16);
         
         blackPieces.forEach((piece, index) => {
-            let x = index % 8;
-            let y = Math.floor(index / 8);
+            let {x, y} = this.indexToCoordinates(index);
             this.setPiece(x, y, piece);
         });
         
         whitePieces.forEach((piece, index) => {
-            let x = index % 8;
-            let y = 7 - Math.floor(index / 8);
-            this.setPiece(x, y, piece);
+            let {x, y} = this.indexToCoordinates(index);
+            this.setPiece(x, 7 - y, piece);
         });
 
         this.pieces = blackPieces.concat(whitePieces);
-    }    
+    }
 
     clearBoard() {
-        for(let row = 0; row < 8; row++)
-        {
-            for(let col = 0; col < 8; col++)
-            {
-                this.setPiece(row, col, null);
-            }
-        }
+        this._gameboard.length = 0;
+        this.pieces.length = 0;
     }
 
     printBoard() {
