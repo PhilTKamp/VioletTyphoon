@@ -139,7 +139,6 @@ class Chessboard {
         return pieces;
     }
 
-    // Refactor to an initialize board
     resetBoard() {
         this.clearBoard();
         this.initializeBoard();
