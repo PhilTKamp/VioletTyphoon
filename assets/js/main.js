@@ -60,7 +60,7 @@ class ChessboardGUI {
                 if(this.gameboard.hasPiece(col, row))
                 {
                     let displayKey = this.gameboard.getColor(col, row) + this.gameboard.getPieceName(col, row);
-                    this.getSquare(col, row).innerHTML = displayValues.get(displayKey);
+                    this.getSquare(col, row).innerHTML = "<p>" + displayValues.get(displayKey) + "</p>";
                     this.setDraggable(col, row, true);
                 }
             }
@@ -102,7 +102,7 @@ class ChessboardGUI {
 
         let potentialMoves = this.gameboard.getValidMoves(this.lastMove.srcX, this.lastMove.srcY);
         potentialMoves.forEach(move => {
-            this.getSquare(move.x, move.y).backgroundColor = "red";
+            this.getSquare(move.x, move.y).addClass("highlighted");
             this.setDroppable(move.x, move.y, true);
         });
     }
@@ -119,7 +119,7 @@ class ChessboardGUI {
         // Breakout
         let potentialMoves = this.gameboard.getValidMoves(srcX, srcY);
         potentialMoves.forEach(move => {
-            this.getSquare(move.x, move.y).backgroundColor = "";
+            this.getSquare(move.x, move.y).removeClass("highlighted");
             this.setDroppable(move.x, move.y, false);
         });
         
@@ -130,8 +130,6 @@ class ChessboardGUI {
             this.getSquare(srcX, srcY).innerHTML = "";
             this.setDraggable(srcX, srcY, false);
         }
-
-        // if(this.gameboard.isKingInCheck)
     }
 }
 
@@ -142,7 +140,6 @@ class ChessSquare {
         this.htmlElement.dataset.y = row;
         this.htmlElement.classList.add(( row % 2 == col % 2 ? "light" : "dark"));
         
-        // CODE REVIEW: Break these to new function?
         this.htmlElement.addEventListener("dragover", (e)=>{e.preventDefault();});
         this.htmlElement.addEventListener("dragenter", this.focusSquare.bind(this));
         this.htmlElement.addEventListener("dragleave", this.unfocusSquare.bind(this));
@@ -174,6 +171,14 @@ class ChessSquare {
         this.htmlElement.style.backgroundColor = value;
     }
 
+    addClass(cssClass) {
+        this.htmlElement.classList.add(cssClass);
+    }
+
+    removeClass(cssClass) {
+        this.htmlElement.classList.remove(cssClass);
+    }
+
     addListener(event, funct) {
         this.htmlElement.addEventListener(event, funct);
     }
@@ -199,12 +204,11 @@ class ChessSquare {
     }
 
     focusSquare() {
-        // Add focused Class or Extract to constant
-        this.htmlElement.style.border = "3px dashed #CB8589";
+        this.addClass("focused");
     }
 
     unfocusSquare() {
-        this.htmlElement.style.border = "";
+        this.removeClass("focused");
     }
 
     stopDrag(e) {
