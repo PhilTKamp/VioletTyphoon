@@ -161,10 +161,12 @@ function inBounds(coord) {
 
 // TODO Limit Piece moves based on check
 class ChessPiece {
-    constructor(id, color, name) {
-        this.name = name;
-        this.color = color;
+    constructor(id, color, name, x = -1, y = -1) {
         this.id = id;
+        this.color = color;
+        this.name = name;
+        this.x = x;
+        this.y = y;
     }
 
     /** 
@@ -181,8 +183,8 @@ class ChessPiece {
 }
 
 class Bishop extends ChessPiece {
-    constructor(id, color) {
-        super(id, color, "B");
+    constructor(id, color, x, y) {
+        super(id, color, "B", x, y);
     }
     
     getPotentialMoves(x, y, board) {
@@ -196,8 +198,8 @@ class Bishop extends ChessPiece {
 
 // Todo: add castling logic, prevent from moving into check
 class King extends ChessPiece {
-    constructor(id, color) {
-        super(id, color, "K");
+    constructor(id, color, x, y) {
+        super(id, color, "K", x, y);
     }
 
     getPotentialMoves(x, y, board) {
@@ -219,7 +221,7 @@ class King extends ChessPiece {
 }
 
 class Knight extends ChessPiece {
-    constructor(id, color) {
+    constructor(id, color, x, y) {
         super(id, color, "N");
     }
 
@@ -240,8 +242,8 @@ class Knight extends ChessPiece {
 }
 
 class Queen extends ChessPiece {
-    constructor(id, color) {
-        super(id, color, "Q");
+    constructor(id, color, x, y) {
+        super(id, x, y, color, "Q");
     }
     
     getPotentialMoves(x, y, board) {
@@ -255,8 +257,8 @@ class Queen extends ChessPiece {
 }
 
 class Rook extends ChessPiece {
-    constructor(id, color) {
-        super(id, color, "R");
+    constructor(id, color, x, y) {
+        super(id, color, "R", x, y);
     }
 
     getPotentialMoves(x, y, board) {
@@ -269,8 +271,8 @@ class Rook extends ChessPiece {
 // Todo: Add en passant capture
 class Pawn extends ChessPiece {
     
-    constructor(id, color) {
-        super(id, color, "P");
+    constructor(id, color, x, y) {
+        super(id, color, "P", x, y);
     }
     
     getPotentialMoves(x, y, board) {
