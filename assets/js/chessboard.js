@@ -7,8 +7,6 @@
  * coordinates to the appropriate chess notation.
 */
 
-// Todo: add logic to determine if a square puts a king in check
-// Todo: add logic for if a king is in check
 // Todo: Check for checkmate and end game
 
 const colors = {

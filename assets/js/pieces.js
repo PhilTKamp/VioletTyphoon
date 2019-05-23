@@ -161,7 +161,6 @@ function inBounds(coord) {
         return false;
 }
 
-// TODO Limit Piece moves based on check
 class ChessPiece {
     constructor(id, color, name, x = -1, y = -1) {
         this.id = id;
@@ -198,7 +197,7 @@ class Bishop extends ChessPiece {
     }
 }
 
-// Todo: add castling logic, prevent from moving into check
+// Todo: add castling logic
 class King extends ChessPiece {
     constructor(id, color, x, y) {
         super(id, color, "K", x, y);
